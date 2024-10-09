@@ -39,5 +39,24 @@
     <footer>
         <p>&copy; 2023 Bolsa de Valores. Todos los derechos reservados.</p>
     </footer>
+    <script>
+    const apiKey = 'GMN8EH35DZOXJ1HU';
+    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=${apiKey}`;
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+
+    </script>
 </body>
 </html>
