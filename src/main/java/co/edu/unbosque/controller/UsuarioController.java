@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import co.edu.unbosque.model.Usuario;
+import java.util.Date;
+
+import co.edu.unbosque.model.Usuarios;
 import co.edu.unbosque.repository.UsuarioRepository;
-
-
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -30,26 +30,29 @@ import co.edu.unbosque.repository.UsuarioRepository;
 public class UsuarioController {
 	@Autowired
 	private UsuarioRepository usrdao;
-	public ArrayList<Usuario> iniciar = new ArrayList<Usuario>();
+	public ArrayList<Usuarios> iniciar = new ArrayList<Usuarios>();
 	public int variante = 0;
 
 	@PostMapping(path = "/usuario")
-	public ResponseEntity<Usuario> add(@RequestParam String nombre, @RequestParam String email,
-			@RequestParam String contrasena) {
+	public ResponseEntity<Usuarios> add(@RequestParam String nombre, @RequestParam String email,
+			@RequestParam String contrasena, @RequestParam String rol, @RequestParam Date fecha_creacion) {
 
-		List<Usuario> all = (List<Usuario>) usrdao.findAll();
+		List<Usuarios> all = (List<Usuarios>) usrdao.findAll();
 
 		for (int i = 0; i < all.size(); i++) {
 			if (all.get(i).getNombre().equals(nombre) && all.get(i).getEmail().equals(email)
-					&& all.get(i).getContrasena().equals(contrasena)) {
+					&& all.get(i).getContrasena().equals(contrasena) && all.get(i).getRol().equals(rol)
+					&& all.get(i).getFecha_creacion().equals(fecha_creacion)) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 		}
 
-		Usuario uc = new Usuario();
+		Usuarios uc = new Usuarios();
 		uc.setNombre(nombre);
 		uc.setEmail(email);
 		uc.setContrasena(contrasena);
+		uc.setRol(rol);
+		uc.setFecha_creacion(fecha_creacion);
 		usrdao.save(uc);
 
 		if (variante == 0) {
@@ -61,8 +64,8 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/usuario")
-	public ResponseEntity<List<Usuario>> mostrarTodo() {
-		List<Usuario> lista = usrdao.findAll();
+	public ResponseEntity<List<Usuarios>> mostrarTodo() {
+		List<Usuarios> lista = usrdao.findAll();
 
 		if (lista.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -71,10 +74,10 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/login")
-	public ResponseEntity<Usuario> login(@RequestParam String email, @RequestParam String contrasena) {
-		List<Usuario> all = (List<Usuario>) usrdao.findAll();
+	public ResponseEntity<Usuarios> login(@RequestParam String email, @RequestParam String contrasena) {
+		List<Usuarios> all = (List<Usuarios>) usrdao.findAll();
 
-		Usuario foundUsuario = null;
+		Usuarios foundUsuario = null;
 
 		if (all.get(0).getEmail().equals(email) && all.get(0).getContrasena().equals(contrasena)) {
 			// admin
@@ -104,7 +107,7 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/inicio")
-	public ResponseEntity<Usuario> inicio() {
+	public ResponseEntity<Usuarios> inicio() {
 
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(iniciar.get(0));
 
@@ -123,16 +126,16 @@ public class UsuarioController {
 
 	@GetMapping("/usuarioExistentes")
 	public ResponseEntity<String> getExists() {
-		List<Usuario> all = (List<Usuario>) usrdao.findAll();
+		List<Usuarios> all = (List<Usuarios>) usrdao.findAll();
 		if (all.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.FOUND).body(null);
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(all.size() +"");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(all.size() + "");
 	}
 
 	@GetMapping("/usuario/{id}")
-	public ResponseEntity<Usuario> getOne(@PathVariable Integer id) {
-		Optional<Usuario> op = usrdao.findById(id);
+	public ResponseEntity<Usuarios> getOne(@PathVariable Integer id) {
+		Optional<Usuarios> op = usrdao.findById(id);
 		if (op.isPresent()) {
 			return ResponseEntity.status(HttpStatus.FOUND).body(op.get());
 		}
@@ -141,7 +144,7 @@ public class UsuarioController {
 
 	@DeleteMapping("/usuario/{id}")
 	public ResponseEntity<String> delete(@PathVariable Integer id) {
-		Optional<Usuario> op = usrdao.findById(id);
+		Optional<Usuarios> op = usrdao.findById(id);
 		if (!op.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
 		}
@@ -151,9 +154,10 @@ public class UsuarioController {
 
 	@PutMapping("/usuario/{id}")
 	public ResponseEntity<Boolean> update(@RequestParam String nombre, @RequestParam String email,
-			@RequestParam String contrasena, @PathVariable Integer id) {
+			@RequestParam String contrasena, @RequestParam String rol, @RequestParam Date fecha_creacion,
+			@PathVariable Integer id) {
 
-		Optional<Usuario> op = usrdao.findById(id);
+		Optional<Usuarios> op = usrdao.findById(id);
 		if (!op.isPresent()) {
 			return ResponseEntity.ok(false);
 		}
@@ -161,15 +165,19 @@ public class UsuarioController {
 			usr.setNombre(nombre);
 			usr.setEmail(email);
 			usr.setContrasena(contrasena);
+			usr.setRol(rol);
+			usr.setFecha_creacion(fecha_creacion);
 
 			usrdao.save(usr);
 			return ResponseEntity.ok(true);
 		}).orElseGet(() -> {
-			Usuario nuevo = new Usuario();
+			Usuarios nuevo = new Usuarios();
 			nuevo.setId(id);
 			nuevo.setNombre(nombre);
 			nuevo.setEmail(email);
 			nuevo.setContrasena(contrasena);
+			nuevo.setRol(rol);
+			nuevo.setFecha_creacion(fecha_creacion);
 			usrdao.save(nuevo);
 			return ResponseEntity.ok(true);
 		});
