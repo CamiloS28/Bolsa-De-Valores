@@ -28,7 +28,7 @@ public class Usuarios {
     private String email;
     @Getter
     @Setter
-    private String contrasena;
+    private String contraseña;
     @Getter
     @Setter
     private String rol;
@@ -42,21 +42,21 @@ public class Usuarios {
         // TODO Auto-generated constructor stub
     }
 
-    public Usuarios(String nombre, String email, String contrasena, String rol, Date fecha_creacion) {
+    public Usuarios(String nombre, String email, String contraseña, String rol, Date fecha_creacion) {
         super();
         this.nombre = nombre;
         this.email = email;
-        this.contrasena = contrasena;
+        this.contraseña = contraseña;
         this.rol = rol;
         this.fecha_creacion = fecha_creacion;
     }
 
-    public Usuarios(Integer id, String nombre, String email, String contrasena, String rol, Date fecha_creacion) {
+    public Usuarios(Integer id, String nombre, String email, String contraseña, String rol, Date fecha_creacion) {
         super();
         this.id = id;
         this.nombre = nombre;
         this.email = email;
-        this.contrasena = contrasena;
+        this.contraseña = contraseña;
         this.rol = rol;
         this.fecha_creacion = fecha_creacion;
     }

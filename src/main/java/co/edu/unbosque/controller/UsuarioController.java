@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,13 +36,14 @@ public class UsuarioController {
 
 	@PostMapping(path = "/usuario")
 	public ResponseEntity<Usuarios> add(@RequestParam String nombre, @RequestParam String email,
-			@RequestParam String contrasena, @RequestParam String rol, @RequestParam Date fecha_creacion) {
+			@RequestParam String contraseña, @RequestParam String rol,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_creacion) {
 
 		List<Usuarios> all = (List<Usuarios>) usrdao.findAll();
 
 		for (int i = 0; i < all.size(); i++) {
 			if (all.get(i).getNombre().equals(nombre) && all.get(i).getEmail().equals(email)
-					&& all.get(i).getContrasena().equals(contrasena) && all.get(i).getRol().equals(rol)
+					&& all.get(i).getContraseña().equals(contraseña) && all.get(i).getRol().equals(rol)
 					&& all.get(i).getFecha_creacion().equals(fecha_creacion)) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
@@ -50,7 +52,7 @@ public class UsuarioController {
 		Usuarios uc = new Usuarios();
 		uc.setNombre(nombre);
 		uc.setEmail(email);
-		uc.setContrasena(contrasena);
+		uc.setContraseña(contraseña);
 		uc.setRol(rol);
 		uc.setFecha_creacion(fecha_creacion);
 		usrdao.save(uc);
@@ -74,12 +76,12 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/login")
-	public ResponseEntity<Usuarios> login(@RequestParam String email, @RequestParam String contrasena) {
+	public ResponseEntity<Usuarios> login(@RequestParam String email, @RequestParam String contraseña) {
 		List<Usuarios> all = (List<Usuarios>) usrdao.findAll();
 
 		Usuarios foundUsuario = null;
 
-		if (all.get(0).getEmail().equals(email) && all.get(0).getContrasena().equals(contrasena)) {
+		if (all.get(0).getEmail().equals(email) && all.get(0).getContraseña().equals(contraseña)) {
 			// admin
 			foundUsuario = all.get(0);
 			if (variante == 0) {
@@ -89,7 +91,7 @@ public class UsuarioController {
 		}
 
 		for (int i = 1; i < all.size(); i++) {
-			if (all.get(i).getEmail().equals(email) && all.get(i).getContrasena().equals(contrasena)) {
+			if (all.get(i).getEmail().equals(email) && all.get(i).getContraseña().equals(contraseña)) {
 				foundUsuario = all.get(i);
 				if (variante == 0) {
 					iniciar.add(foundUsuario);
@@ -154,7 +156,8 @@ public class UsuarioController {
 
 	@PutMapping("/usuario/{id}")
 	public ResponseEntity<Boolean> update(@RequestParam String nombre, @RequestParam String email,
-			@RequestParam String contrasena, @RequestParam String rol, @RequestParam Date fecha_creacion,
+			@RequestParam String contraseña, @RequestParam String rol,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_creacion,
 			@PathVariable Integer id) {
 
 		Optional<Usuarios> op = usrdao.findById(id);
@@ -164,7 +167,7 @@ public class UsuarioController {
 		return op.map(usr -> {
 			usr.setNombre(nombre);
 			usr.setEmail(email);
-			usr.setContrasena(contrasena);
+			usr.setContraseña(contraseña);
 			usr.setRol(rol);
 			usr.setFecha_creacion(fecha_creacion);
 
@@ -175,7 +178,7 @@ public class UsuarioController {
 			nuevo.setId(id);
 			nuevo.setNombre(nombre);
 			nuevo.setEmail(email);
-			nuevo.setContrasena(contrasena);
+			nuevo.setContraseña(contraseña);
 			nuevo.setRol(rol);
 			nuevo.setFecha_creacion(fecha_creacion);
 			usrdao.save(nuevo);
