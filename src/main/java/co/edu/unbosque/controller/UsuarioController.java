@@ -22,7 +22,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Date;
 
-import co.edu.unbosque.model.Usuarios;
+import co.edu.unbosque.model.Usuario;
 import co.edu.unbosque.repository.UsuarioRepository;
 
 @CrossOrigin(origins = "*")
@@ -31,15 +31,15 @@ import co.edu.unbosque.repository.UsuarioRepository;
 public class UsuarioController {
 	@Autowired
 	private UsuarioRepository usrdao;
-	public ArrayList<Usuarios> iniciar = new ArrayList<Usuarios>();
+	public ArrayList<Usuario> iniciar = new ArrayList<Usuario>();
 	public int variante = 0;
 
 	@PostMapping(path = "/usuario")
-	public ResponseEntity<Usuarios> add(@RequestParam String nombre, @RequestParam String email,
+	public ResponseEntity<Usuario> add(@RequestParam String nombre, @RequestParam String email,
 			@RequestParam String contraseña, @RequestParam String rol,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_creacion) {
 
-		List<Usuarios> all = (List<Usuarios>) usrdao.findAll();
+		List<Usuario> all = (List<Usuario>) usrdao.findAll();
 
 		for (int i = 0; i < all.size(); i++) {
 			if (all.get(i).getNombre().equals(nombre) && all.get(i).getEmail().equals(email)
@@ -49,7 +49,7 @@ public class UsuarioController {
 			}
 		}
 
-		Usuarios uc = new Usuarios();
+		Usuario uc = new Usuario();
 		uc.setNombre(nombre);
 		uc.setEmail(email);
 		uc.setContraseña(contraseña);
@@ -66,8 +66,8 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/usuario")
-	public ResponseEntity<List<Usuarios>> mostrarTodo() {
-		List<Usuarios> lista = usrdao.findAll();
+	public ResponseEntity<List<Usuario>> mostrarTodo() {
+		List<Usuario> lista = usrdao.findAll();
 
 		if (lista.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -76,10 +76,10 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/login")
-	public ResponseEntity<Usuarios> login(@RequestParam String email, @RequestParam String contraseña) {
-		List<Usuarios> all = (List<Usuarios>) usrdao.findAll();
+	public ResponseEntity<Usuario> login(@RequestParam String email, @RequestParam String contraseña) {
+		List<Usuario> all = (List<Usuario>) usrdao.findAll();
 
-		Usuarios foundUsuario = null;
+		Usuario foundUsuario = null;
 
 		if (all.get(0).getEmail().equals(email) && all.get(0).getContraseña().equals(contraseña)) {
 			// admin
@@ -109,7 +109,7 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/inicio")
-	public ResponseEntity<Usuarios> inicio() {
+	public ResponseEntity<Usuario> inicio() {
 
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(iniciar.get(0));
 
@@ -128,7 +128,7 @@ public class UsuarioController {
 
 	@GetMapping("/usuarioExistentes")
 	public ResponseEntity<String> getExists() {
-		List<Usuarios> all = (List<Usuarios>) usrdao.findAll();
+		List<Usuario> all = (List<Usuario>) usrdao.findAll();
 		if (all.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.FOUND).body(null);
 		}
@@ -136,8 +136,8 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/usuario/{id}")
-	public ResponseEntity<Usuarios> getOne(@PathVariable Integer id) {
-		Optional<Usuarios> op = usrdao.findById(id);
+	public ResponseEntity<Usuario> getOne(@PathVariable Integer id) {
+		Optional<Usuario> op = usrdao.findById(id);
 		if (op.isPresent()) {
 			return ResponseEntity.status(HttpStatus.FOUND).body(op.get());
 		}
@@ -146,7 +146,7 @@ public class UsuarioController {
 
 	@DeleteMapping("/usuario/{id}")
 	public ResponseEntity<String> delete(@PathVariable Integer id) {
-		Optional<Usuarios> op = usrdao.findById(id);
+		Optional<Usuario> op = usrdao.findById(id);
 		if (!op.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
 		}
@@ -160,7 +160,7 @@ public class UsuarioController {
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_creacion,
 			@PathVariable Integer id) {
 
-		Optional<Usuarios> op = usrdao.findById(id);
+		Optional<Usuario> op = usrdao.findById(id);
 		if (!op.isPresent()) {
 			return ResponseEntity.ok(false);
 		}
@@ -174,8 +174,8 @@ public class UsuarioController {
 			usrdao.save(usr);
 			return ResponseEntity.ok(true);
 		}).orElseGet(() -> {
-			Usuarios nuevo = new Usuarios();
-			nuevo.setId(id);
+			Usuario nuevo = new Usuario();
+			nuevo.setUsuario_id(id);
 			nuevo.setNombre(nombre);
 			nuevo.setEmail(email);
 			nuevo.setContraseña(contraseña);
