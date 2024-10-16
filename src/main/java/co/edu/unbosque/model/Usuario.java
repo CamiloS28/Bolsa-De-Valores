@@ -15,58 +15,61 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 public class Usuario {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
-    @Setter
-    private Integer id;
-    @Getter
-    @Setter
-    private String nombre;
-    @Getter
-    @Setter
-    private String email;
-    @Getter
-    @Setter
-    private String contraseña;
-    @Getter
-    @Setter
-    private String rol;
-    @Getter
-    @Setter
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fecha_creacion;
 
-    public Usuario() {
-        // TODO Auto-generated constructor stub
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Getter
+	@Setter
+	private Integer usuario_id;
+	@Getter
+	@Setter
+	private String nombre;
+	@Getter
+	@Setter
+	private String email;
+	@Getter
+	@Setter
+	private String contraseña;
+	@Getter
+	@Setter
+	private String rol;
+	@Getter
+	@Setter
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fecha_creacion;
 
-    public Usuario(String nombre, String email, String contraseña, String rol, Date fecha_creacion) {
-        super();
-        this.nombre = nombre;
-        this.email = email;
-        this.contraseña = contraseña;
-        this.rol = rol;
-        this.fecha_creacion = fecha_creacion;
-    }
-
-    public Usuario(Integer id, String nombre, String email, String contraseña, String rol, Date fecha_creacion) {
-        super();
-        this.id = id;
-        this.nombre = nombre;
-        this.email = email;
-        this.contraseña = contraseña;
-        this.rol = rol;
-        this.fecha_creacion = fecha_creacion;
-    }
-
-	public Integer getId() {
-		return id;
+	public Usuario() {
+		// TODO Auto-generated constructor stub
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public Usuario(String nombre, String email, String contraseña, String rol, Date fecha_creacion) {
+		super();
+		this.nombre = nombre;
+		this.email = email;
+		this.contraseña = contraseña;
+		this.rol = rol;
+		this.fecha_creacion = fecha_creacion;
+	}
+
+	public Usuario(Integer usuario_id, String nombre, String email, String contraseña, String rol,
+			Date fecha_creacion) {
+		super();
+		this.usuario_id = usuario_id;
+		this.nombre = nombre;
+		this.email = email;
+		this.contraseña = contraseña;
+		this.rol = rol;
+		this.fecha_creacion = fecha_creacion;
+	}
+
+	public Integer getUsuario_id() {
+		return usuario_id;
+	}
+
+	public void setUsuario_id(Integer usuario_id) {
+		this.usuario_id = usuario_id;
+
 	}
 
 	public String getNombre() {
