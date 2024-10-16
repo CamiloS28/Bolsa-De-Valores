@@ -31,8 +31,6 @@ import co.edu.unbosque.repository.UsuarioRepository;
 public class UsuarioController {
 	@Autowired
 	private UsuarioRepository usrdao;
-	public ArrayList<Usuario> iniciar = new ArrayList<Usuario>();
-	public int variante = 0;
 
 	@PostMapping(path = "/usuario")
 	public ResponseEntity<Usuario> add(@RequestParam String nombre, @RequestParam String email,
@@ -57,10 +55,7 @@ public class UsuarioController {
 		uc.setFecha_creacion(fecha_creacion);
 		usrdao.save(uc);
 
-		if (variante == 0) {
-			iniciar.add(uc);
-			variante++;
-		}
+	
 
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(uc);
 	}
@@ -84,19 +79,13 @@ public class UsuarioController {
 		if (all.get(0).getEmail().equals(email) && all.get(0).getContraseña().equals(contraseña)) {
 			// admin
 			foundUsuario = all.get(0);
-			if (variante == 0) {
-				iniciar.add(foundUsuario);
-				variante++;
-			}
+		
 		}
 
 		for (int i = 1; i < all.size(); i++) {
 			if (all.get(i).getEmail().equals(email) && all.get(i).getContraseña().equals(contraseña)) {
 				foundUsuario = all.get(i);
-				if (variante == 0) {
-					iniciar.add(foundUsuario);
-					variante++;
-				}
+			
 				break;
 			}
 		}
@@ -108,18 +97,12 @@ public class UsuarioController {
 		}
 	}
 
-	@GetMapping("/inicio")
-	public ResponseEntity<Usuario> inicio() {
 
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(iniciar.get(0));
-
-	}
 
 	@GetMapping("/cerrar")
 	public RedirectView cerrar() {
 
-		iniciar.clear();
-		variante = 0;
+	
 
 		String url = "http://localhost:8080/Frontend/login.html";
 		return new RedirectView(url);
