@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,8 +55,6 @@ public class UsuarioController {
 		uc.setFecha_creacion(fecha_creacion);
 		usrdao.save(uc);
 
-	
-
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(uc);
 	}
 
@@ -73,40 +71,20 @@ public class UsuarioController {
 	@GetMapping("/login")
 	public ResponseEntity<Usuario> login(@RequestParam String email, @RequestParam String contraseña) {
 		List<Usuario> all = (List<Usuario>) usrdao.findAll();
-
 		Usuario foundUsuario = null;
 
-		if (all.get(0).getEmail().equals(email) && all.get(0).getContraseña().equals(contraseña)) {
-			// admin
-			foundUsuario = all.get(0);
-		
-		}
-
-		for (int i = 1; i < all.size(); i++) {
-			if (all.get(i).getEmail().equals(email) && all.get(i).getContraseña().equals(contraseña)) {
-				foundUsuario = all.get(i);
-			
+		for (Usuario usuario : all) {
+			if (usuario.getEmail().equals(email) && usuario.getContraseña().equals(contraseña)) {
+				foundUsuario = usuario;
 				break;
 			}
 		}
 
 		if (foundUsuario != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(foundUsuario);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(foundUsuario); // Devolver el objeto Usuario
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-	}
-
-
-
-	@GetMapping("/cerrar")
-	public RedirectView cerrar() {
-
-	
-
-		String url = "http://localhost:8080/Frontend/login.html";
-		return new RedirectView(url);
-
 	}
 
 	@GetMapping("/usuarioExistentes")
@@ -140,8 +118,7 @@ public class UsuarioController {
 	@PutMapping("/usuario/{id}")
 	public ResponseEntity<Boolean> update(@RequestParam String nombre, @RequestParam String email,
 			@RequestParam String contraseña, @RequestParam String rol,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_creacion,
-			@PathVariable Integer id) {
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_creacion, @PathVariable Integer id) {
 
 		Optional<Usuario> op = usrdao.findById(id);
 		if (!op.isPresent()) {
