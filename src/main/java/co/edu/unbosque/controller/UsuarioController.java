@@ -175,7 +175,9 @@ public class UsuarioController {
 			return ResponseEntity.ok(true);
 		}).orElseGet(() -> {
 			Usuario nuevo = new Usuario();
+
 			nuevo.setUsuario_id(id);
+
 			nuevo.setNombre(nombre);
 			nuevo.setEmail(email);
 			nuevo.setContraseña(contraseña);

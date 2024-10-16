@@ -15,6 +15,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 public class Usuario {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Getter
@@ -68,6 +69,7 @@ public class Usuario {
 
 	public void setUsuario_id(Integer usuario_id) {
 		this.usuario_id = usuario_id;
+
 	}
 
 	public String getNombre() {
