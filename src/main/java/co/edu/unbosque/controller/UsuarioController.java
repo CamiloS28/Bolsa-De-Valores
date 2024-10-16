@@ -100,7 +100,7 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> getOne(@PathVariable Integer id) {
 		Optional<Usuario> op = usrdao.findById(id);
 		if (op.isPresent()) {
-			return ResponseEntity.status(HttpStatus.FOUND).body(op.get());
+			return ResponseEntity.status(HttpStatus.OK).body(op.get());
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
