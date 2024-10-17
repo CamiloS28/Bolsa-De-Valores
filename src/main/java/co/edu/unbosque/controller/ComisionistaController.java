@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import co.edu.unbosque.model.Usuario;
+import co.edu.unbosque.repository.UsuarioRepository;
 
 import co.edu.unbosque.model.Comisionista;
 import co.edu.unbosque.repository.ComisionistaRepository;
@@ -25,18 +27,27 @@ import co.edu.unbosque.repository.ComisionistaRepository;
 public class ComisionistaController {
 
 	@Autowired
+	private UsuarioRepository usuarioRepository;
+
+	@Autowired
 	private ComisionistaRepository comisionistaRepo;
 
 	@PostMapping("/comisionista")
 	public ResponseEntity<Comisionista> addComisionista(@RequestParam String empresa, @RequestParam Double comision,
 			@RequestParam String pais, @RequestParam Integer usuarioId) {
 
-		Comisionista comisionista = new Comisionista();
-		comisionista.setEmpresa(empresa);
-		comisionista.setComision(comision);
-		comisionista.setPais(pais);
-		comisionista.setUsuario_id(usuarioId);
+		Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+		if (!usuarioOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 
+		Usuario usuario = usuarioOpt.get();
+		if (comisionistaRepo.existsById(usuario.getUsuario_id())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+		}
+
+		Comisionista comisionista = new Comisionista(usuario, empresa, comision, pais);
 		comisionistaRepo.save(comisionista);
 		return ResponseEntity.status(HttpStatus.CREATED).body(comisionista);
 	}
@@ -60,23 +71,29 @@ public class ComisionistaController {
 	}
 
 	@PutMapping("/comisionista/{id}")
-	public ResponseEntity<Comisionista> updateComisionista(@PathVariable Integer id, @RequestParam String empresa,
-			@RequestParam Double comision, @RequestParam String pais, @RequestParam Integer usuarioId) {
+	public ResponseEntity<Boolean> updateComisionista(@PathVariable String empresa,
+			@RequestParam Double comision, @RequestParam String pais, @RequestParam Integer comisionista_id) {
 
-		Optional<Comisionista> comisionistaOptional = comisionistaRepo.findById(id);
+		Optional<Comisionista> comisionistaOptional = comisionistaRepo.findById(comisionista_id);
 
 		if (!comisionistaOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			return ResponseEntity.ok(false);
 		}
 
-		Comisionista comisionista = comisionistaOptional.get();
-		comisionista.setEmpresa(empresa);
-		comisionista.setComision(comision);
-		comisionista.setPais(pais);
-		comisionista.setUsuario_id(usuarioId);
-
-		comisionistaRepo.save(comisionista);
-		return ResponseEntity.status(HttpStatus.OK).body(comisionista);
+		return comisionistaOptional.map(comi -> {
+			comi.setEmpresa(empresa);
+			comi.setComision(comision);
+			comi.setPais(pais);
+			comisionistaRepo.save(comi);
+			return ResponseEntity.ok(true);
+		}).orElseGet(() -> {
+			Comisionista nuevo = new Comisionista();
+			nuevo.setEmpresa(empresa);
+			nuevo.setComision(comision);
+			nuevo.setPais(pais);
+			comisionistaRepo.save(nuevo);
+			return ResponseEntity.ok(true);
+		});
 	}
 
 	@DeleteMapping("/comisionista/{id}")

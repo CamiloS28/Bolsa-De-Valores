@@ -5,6 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Comisionista {
@@ -12,6 +15,11 @@ public class Comisionista {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer comisionista_id;
+
+	@OneToOne
+	@MapsId
+	@JoinColumn(name = "comisionista_id")
+	private Usuario usuario;
 
 	@Column(nullable = false)
 	private String empresa;
@@ -22,20 +30,14 @@ public class Comisionista {
 	@Column(nullable = false)
 	private String pais;
 
-	@Column(nullable = false)
-	private Integer usuario_id;
-
-
 	public Comisionista() {
 	}
 
-	public Comisionista(Integer comisionista_id, String empresa, Double comision, String pais, Integer usuario_id) {
-		super();
-		this.comisionista_id = comisionista_id;
+	public Comisionista(Usuario usuario, String empresa, Double comision, String pais) {
+		this.usuario = usuario;
 		this.empresa = empresa;
 		this.comision = comision;
 		this.pais = pais;
-		this.usuario_id = usuario_id;
 	}
 
 	public Integer getComisionista_id() {
@@ -68,14 +70,6 @@ public class Comisionista {
 
 	public void setPais(String pais) {
 		this.pais = pais;
-	}
-
-	public Integer getUsuario_id() {
-		return usuario_id;
-	}
-
-	public void setUsuario_id(Integer usuario_id) {
-		this.usuario_id = usuario_id;
 	}
 
 }
