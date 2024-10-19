@@ -76,7 +76,7 @@ public class InversionistaController {
         }
         inversionistaRepository.deleteById(id);
 
-        return ResponseEntity.status(HttpStatus.FOUND).body("Deleted");
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
 
     @PutMapping("/inversionista/{id}")

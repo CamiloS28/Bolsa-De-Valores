@@ -71,7 +71,7 @@ public class ComisionistaController {
 	}
 
 	@PutMapping("/comisionista/{id}")
-	public ResponseEntity<Boolean> updateComisionista(@PathVariable String empresa,
+	public ResponseEntity<Boolean> updateComisionista(@RequestParam String empresa,
 			@RequestParam Double comision, @RequestParam String pais, @RequestParam Integer comisionista_id) {
 
 		Optional<Comisionista> comisionistaOptional = comisionistaRepo.findById(comisionista_id);
@@ -84,10 +84,12 @@ public class ComisionistaController {
 			comi.setEmpresa(empresa);
 			comi.setComision(comision);
 			comi.setPais(pais);
+
 			comisionistaRepo.save(comi);
 			return ResponseEntity.ok(true);
 		}).orElseGet(() -> {
 			Comisionista nuevo = new Comisionista();
+			nuevo.setComisionista_id(comisionista_id);
 			nuevo.setEmpresa(empresa);
 			nuevo.setComision(comision);
 			nuevo.setPais(pais);
