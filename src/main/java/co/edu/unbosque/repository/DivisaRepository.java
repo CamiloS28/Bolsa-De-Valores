@@ -7,8 +7,6 @@ import co.edu.unbosque.model.Divisa;
 
 public interface DivisaRepository extends JpaRepository<Divisa, Integer> {
 
-    public Optional<Divisa> findById(Integer id);
 
-    public List<Divisa> findAll();
 
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ComisionistaRepository extends CrudRepository<Comisionista, Integer> {
-	public Optional<Comisionista> findById(Integer id);
 
 	public List<Comisionista> findAll();
 

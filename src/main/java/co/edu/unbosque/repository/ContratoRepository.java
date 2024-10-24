@@ -8,8 +8,4 @@ import co.edu.unbosque.model.Contrato;
 
 public interface ContratoRepository extends JpaRepository<Contrato, Integer> {
 
-    public Optional<Contrato> findById(Integer contrato_id);
-
-    public List<Contrato> findAll();
-
 }
