@@ -102,4 +102,13 @@ public class InversionistaController {
             return ResponseEntity.ok(true);
         });
     }
+
+    @GetMapping("/inversionista/{id}")
+    public ResponseEntity<Inversionista> getOne(@PathVariable Integer id) {
+        Optional<Inversionista> inversionistaOpt = inversionistaRepository.findById(id);
+        if (inversionistaOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(inversionistaOpt.get());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
 }
