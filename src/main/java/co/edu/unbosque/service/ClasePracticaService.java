@@ -36,4 +36,15 @@ public class ClasePracticaService {
     public void deleteClasePractica(int id) {
         repository.deleteById(id);
     }
+    
+
+//	public void eliminarRegistroCauces(String cauce) {
+//		repository.eliminarRegistroCauces(cauce);
+//	}
+//
+//
+//	public List<String> obtenerNombrCauce() {
+//		return repository.nombreCauces();
+//	}
+
 }
