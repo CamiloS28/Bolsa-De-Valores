@@ -7,10 +7,6 @@ import co.edu.unbosque.model.Empresa;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
 
-    public Optional<Empresa> findById(Integer id);
-
-    public List<Empresa> findAll();
-
-    public Optional<Empresa> findByNombre(String nombre);
+	public Optional<Empresa> findByNombre(String nombre);
 
 }

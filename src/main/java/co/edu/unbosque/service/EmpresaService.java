@@ -23,6 +23,11 @@ public class EmpresaService {
 	public Optional<Empresa> getEmpresaById(int id) {
 		return repository.findById(id);
 	}
+	
+	public Optional<Empresa> getEmpresaByname(String name) {
+		return repository.findByNombre(name);
+	}
+
 
 	public Empresa createEmpresa(Empresa Empresa) {
 		return repository.save(Empresa);

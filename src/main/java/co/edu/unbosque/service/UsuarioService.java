@@ -16,7 +16,7 @@ public class UsuarioService {
 	private UsuarioRepository repository;
 
 	public List<Usuario> getAll() {
-		return repository.findAll();
+		return (List<Usuario>) repository.findAll();
 	}
 
 	public Optional<Usuario> getUsuarioById(int id) {

@@ -60,7 +60,7 @@ public class UsuarioController {
 
 	@GetMapping("/usuario")
 	public ResponseEntity<List<Usuario>> mostrarTodo() {
-		List<Usuario> lista = usrdao.findAll();
+		List<Usuario> lista = (List<Usuario>) usrdao.findAll();
 
 		if (lista.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
