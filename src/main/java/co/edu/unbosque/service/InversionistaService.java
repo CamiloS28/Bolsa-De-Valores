@@ -6,34 +6,34 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import co.edu.unbosque.model.Accion;
-import co.edu.unbosque.repository.AccionRepository;
+import co.edu.unbosque.model.Inversionista;
+import co.edu.unbosque.repository.InversionistaRepository;
 
 @Service
 public class InversionistaService {
 
 	
 	@Autowired
-	private AccionRepository repository;
+	private InversionistaRepository repository;
 
-	public List<Accion> getAll() {
+	public List<Inversionista> getAll() {
 		return repository.findAll();
 	}
 
-	public Optional<Accion> getAccionById(int id) {
+	public Optional<Inversionista> getInversionistaById(int id) {
 		return repository.findById(id);
 	}
 
-	public Accion createAccion(Accion Accion) {
-		return repository.save(Accion);
+	public Inversionista createInversionista(Inversionista Inversionista) {
+		return repository.save(Inversionista);
 	}
 
-	public Accion updateAccion(Accion AccionDetails) {
+	public Inversionista updateInversionista(Inversionista InversionistaDetails) {
 
-		return repository.save(AccionDetails);
+		return repository.save(InversionistaDetails);
 	}
 
-	public void deleteAccion(int id) {
+	public void deleteInversionista(int id) {
 		repository.deleteById(id);
 	}
 

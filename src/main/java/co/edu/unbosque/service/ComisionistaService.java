@@ -36,4 +36,8 @@ public class ComisionistaService {
 		repository.deleteById(id);
 	}
 
+	public boolean existsById(int id) {
+
+		return repository.existsById(id);
+	}
 }

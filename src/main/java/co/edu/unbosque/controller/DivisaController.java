@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unbosque.repository.DivisaRepository;
+import co.edu.unbosque.service.AccionService;
+import co.edu.unbosque.service.DivisaService;
 import co.edu.unbosque.model.Divisa;
 import java.util.ArrayList;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,86 +29,87 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api")
 public class DivisaController {
 
-    @Autowired
-    private DivisaRepository divisaRepository;
-    public ArrayList<Divisa> divisas = new ArrayList<Divisa>();
-    public int variante = 0;
+	@Autowired
+	private DivisaService divisaService;
 
-    @PostMapping("/divisa")
-    public ResponseEntity<Divisa> add(@RequestParam String nombre, @RequestParam String simbolo,
-            @RequestParam Double tasa_cambio) {
+	public ArrayList<Divisa> divisas = new ArrayList<Divisa>();
+	public int variante = 0;
 
-        List<Divisa> all = (List<Divisa>) divisaRepository.findAll();
+	@PostMapping("/divisa")
+	public ResponseEntity<Divisa> add(@RequestParam String nombre, @RequestParam String simbolo,
+			@RequestParam Double tasa_cambio) {
 
-        for (int i = 0; i < all.size(); i++) {
-            if (all.get(i).getNombre().equals(nombre) && all.get(i).getSimbolo().equals(simbolo)
-                    && all.get(i).getTasa_cambio().equals(tasa_cambio)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-        }
+		List<Divisa> all = divisaService.getAll();
 
-        Divisa dc = new Divisa();
-        dc.setNombre(nombre);
-        dc.setSimbolo(simbolo);
-        dc.setTasa_cambio(tasa_cambio);
-        divisaRepository.save(dc);
+		for (int i = 0; i < all.size(); i++) {
+			if (all.get(i).getNombre().equals(nombre) && all.get(i).getSimbolo().equals(simbolo)
+					&& all.get(i).getTasa_cambio().equals(tasa_cambio)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
+		}
 
-        if (variante == 0) {
-            divisas.add(dc);
-        }
+		Divisa dc = new Divisa();
+		dc.setNombre(nombre);
+		dc.setSimbolo(simbolo);
+		dc.setTasa_cambio(tasa_cambio);
+		divisaService.createDivisa(dc);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(dc);
+		if (variante == 0) {
+			divisas.add(dc);
+		}
 
-    }
+		return ResponseEntity.status(HttpStatus.CREATED).body(dc);
 
-    @GetMapping("/divisa")
-    public ResponseEntity<List<Divisa>> mostrarTodo() {
+	}
 
-        List<Divisa> listaDivisas = divisaRepository.findAll();
-        if (listaDivisas.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-        }
+	@GetMapping("/divisa")
+	public ResponseEntity<List<Divisa>> mostrarTodo() {
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(listaDivisas);
-    }
+		List<Divisa> listaDivisas = divisaService.getAll();
+		if (listaDivisas.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+		}
 
-    @DeleteMapping("/divisa/{divisa_id}")
-    public ResponseEntity<String> delete(@PathVariable Integer divisa_id) {
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(listaDivisas);
+	}
 
-        Optional<Divisa> divisaOpt = divisaRepository.findById(divisa_id);
-        if (!divisaOpt.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
-        }
+	@DeleteMapping("/divisa/{divisa_id}")
+	public ResponseEntity<String> delete(@PathVariable Integer divisa_id) {
 
-        divisaRepository.deleteById(divisa_id);
+		Optional<Divisa> divisaOpt = divisaService.getDivisaById(divisa_id);
+		if (!divisaOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+		}
+		divisaService.deleteDivisa(divisa_id);
 
-        return ResponseEntity.status(HttpStatus.FOUND).body("Deleted");
-    }
+		return ResponseEntity.status(HttpStatus.FOUND).body("Deleted");
+	}
 
-    @PutMapping("/divisa/{divisa_id}")
-    public ResponseEntity<Boolean> update(@RequestParam String nombre, @RequestParam String sigla,
-            @RequestParam Double tasa_cambio, @RequestParam Integer divisa_id) {
+	@PutMapping("/divisa/{divisa_id}")
+	public ResponseEntity<Boolean> update(@RequestParam String nombre, @RequestParam String sigla,
+			@RequestParam Double tasa_cambio, @RequestParam Integer divisa_id) {
 
-        Optional<Divisa> divisaOpt = divisaRepository.findById(divisa_id);
-        if (!divisaOpt.isPresent()) {
-            return ResponseEntity.ok(false);
-        }
-        return divisaOpt.map(div -> {
-            div.setNombre(nombre);
-            div.setSimbolo(sigla);
-            div.setTasa_cambio(tasa_cambio);
+		Optional<Divisa> divisaOpt = divisaService.getDivisaById(divisa_id);
+		if (!divisaOpt.isPresent()) {
+			return ResponseEntity.ok(false);
+		}
+		return divisaOpt.map(div -> {
+			div.setNombre(nombre);
+			div.setSimbolo(sigla);
+			div.setTasa_cambio(tasa_cambio);
+			divisaService.createDivisa(div);
 
-            divisaRepository.save(div);
-            return ResponseEntity.ok(true);
-        }).orElseGet(() -> {
-            Divisa nuevo = new Divisa();
-            nuevo.setDivisa_id(divisa_id);
-            nuevo.setNombre(nombre);
-            nuevo.setSimbolo(sigla);
-            nuevo.setTasa_cambio(tasa_cambio);
-            divisaRepository.save(nuevo);
-            return ResponseEntity.ok(true);
-        });
+			return ResponseEntity.ok(true);
+		}).orElseGet(() -> {
+			Divisa nuevo = new Divisa();
+			nuevo.setDivisa_id(divisa_id);
+			nuevo.setNombre(nombre);
+			nuevo.setSimbolo(sigla);
+			nuevo.setTasa_cambio(tasa_cambio);
+			divisaService.createDivisa(nuevo);
 
-    }
+			return ResponseEntity.ok(true);
+		});
+
+	}
 }

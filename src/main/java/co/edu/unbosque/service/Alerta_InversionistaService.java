@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import co.edu.unbosque.model.Alerta_Inversionista;
 import co.edu.unbosque.repository.Alerta_InversionistaRepository;
 
-
 @Service
 public class Alerta_InversionistaService {
 	@Autowired
@@ -34,6 +33,11 @@ public class Alerta_InversionistaService {
 
 	public void deleteAlerta_Inversionista(int id) {
 		repository.deleteById(id);
+	}
+
+	public boolean existsById(int id) {
+
+		return repository.existsById(id);
 	}
 
 }
