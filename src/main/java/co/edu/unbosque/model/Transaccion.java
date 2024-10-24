@@ -49,6 +49,10 @@ public class Transaccion {
 
     private Double monto_total;
 
+    @ManyToOne
+    @JoinColumn(name = "contrato_id", nullable = false)
+    private Contrato contrato;
+
     public Transaccion() {
     }
 
