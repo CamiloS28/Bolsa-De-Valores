@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
-	public Optional<Usuario> findById(Integer id);
 
 	public List<Usuario> findAll();
 

@@ -7,8 +7,4 @@ import co.edu.unbosque.model.Portafolio;
 
 public interface PortafolioRepository extends JpaRepository<Portafolio, Integer> {
 
-    public Optional<Portafolio> findById(Integer id);
-
-    public List<Portafolio> findAll();
-
 }

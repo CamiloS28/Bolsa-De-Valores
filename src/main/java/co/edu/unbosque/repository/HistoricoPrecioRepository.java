@@ -7,8 +7,6 @@ import co.edu.unbosque.model.HistoricoPrecio;
 
 public interface HistoricoPrecioRepository extends JpaRepository<HistoricoPrecio, Integer> {
 
-    public Optional<HistoricoPrecio> findById(Integer id);
 
-    public List<HistoricoPrecio> findAll();
 
 }
