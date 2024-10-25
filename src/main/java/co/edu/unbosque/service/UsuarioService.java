@@ -9,14 +9,13 @@ import org.springframework.stereotype.Service;
 import co.edu.unbosque.model.Usuario;
 import co.edu.unbosque.repository.UsuarioRepository;
 
-
 @Service
 public class UsuarioService {
 
 	private UsuarioRepository repository;
 
 	public List<Usuario> getAll() {
-		return (List<Usuario>) repository.findAll();
+		return repository.findAll();
 	}
 
 	public Optional<Usuario> getUsuarioById(int id) {

@@ -1,15 +1,9 @@
 package co.edu.unbosque.repository;
 
-
-
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import co.edu.unbosque.model.Usuario;
 
-
-
-public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
-
-
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
 }
