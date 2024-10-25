@@ -13,13 +13,11 @@ import co.edu.unbosque.repository.TransaccionRepository;
 import co.edu.unbosque.repository.InversionistaRepository;
 import co.edu.unbosque.repository.AccionRepository;
 import co.edu.unbosque.repository.ComisionistaRepository;
-import co.edu.unbosque.repository.DivisaRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import co.edu.unbosque.model.Transaccion;
 import co.edu.unbosque.model.Inversionista;
 import co.edu.unbosque.model.Accion;
 import co.edu.unbosque.model.Comisionista;
-import co.edu.unbosque.model.Divisa;
 import org.springframework.web.bind.annotation.PutMapping;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,12 +44,9 @@ public class TransaccionController {
     @Autowired
     private ComisionistaRepository comisionistaRepository;
 
-    @Autowired
-    private DivisaRepository divisaRepository;
-
     @PostMapping("/transaccion")
     public ResponseEntity<Transaccion> add(@RequestParam Integer inversionista_id, @RequestParam Integer accion_id,
-            @RequestParam Integer comisionista_id, @RequestParam Integer divisa_id, @RequestParam String tipo,
+            @RequestParam Integer comisionista_id, @RequestParam String tipo,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha, @RequestParam Double cantidad,
             @RequestParam Double precio,
             @RequestParam Double monto_total) {
@@ -71,16 +66,10 @@ public class TransaccionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Optional<Divisa> divisaOpt = divisaRepository.findById(divisa_id);
-        if (!divisaOpt.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
         Transaccion transaccion = new Transaccion();
         transaccion.setInversionista(inversionistaOpt.get());
         transaccion.setAccion(accionOpt.get());
         transaccion.setComisionista(comisionistaOpt.get());
-        transaccion.setDivisa(divisaOpt.get());
         transaccion.setTipo(tipo);
         transaccion.setCantidad(cantidad);
         transaccion.setPrecio(precio);
@@ -128,7 +117,7 @@ public class TransaccionController {
 
     @PutMapping("/transaccion/{id}")
     public ResponseEntity<Transaccion> update(@PathVariable Integer id, @RequestParam Integer inversionista_id,
-            @RequestParam Integer accion_id, @RequestParam Integer comisionista_id, @RequestParam Integer divisa_id,
+            @RequestParam Integer accion_id, @RequestParam Integer comisionista_id,
             @RequestParam String tipo, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha,
             @RequestParam Double cantidad, @RequestParam Double precio, @RequestParam Double monto_total) {
 
@@ -152,16 +141,10 @@ public class TransaccionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Optional<Divisa> divisaOpt = divisaRepository.findById(divisa_id);
-        if (!divisaOpt.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
         Transaccion transaccion = transaccionOpt.get();
         transaccion.setInversionista(inversionistaOpt.get());
         transaccion.setAccion(accionOpt.get());
         transaccion.setComisionista(comisionistaOpt.get());
-        transaccion.setDivisa(divisaOpt.get());
         transaccion.setTipo(tipo);
         transaccion.setCantidad(cantidad);
         transaccion.setPrecio(precio);

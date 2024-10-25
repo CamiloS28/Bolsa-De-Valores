@@ -23,18 +23,16 @@ public class EmpresaService {
 	public Optional<Empresa> getEmpresaById(int id) {
 		return repository.findById(id);
 	}
-	
+
 	public Optional<Empresa> getEmpresaByname(String name) {
 		return repository.findByNombre(name);
 	}
-
 
 	public Empresa createEmpresa(Empresa Empresa) {
 		return repository.save(Empresa);
 	}
 
 	public Empresa updateEmpresa(Empresa EmpresaDetails) {
-
 		return repository.save(EmpresaDetails);
 	}
 
@@ -42,9 +40,9 @@ public class EmpresaService {
 		repository.deleteById(id);
 	}
 
-//	public Optional<Empresa> findById(Integer id);
-//
-//    public List<Empresa> findAll();
-//
-//    public Optional<Empresa> findByNombre(String nombre);
+	// public Optional<Empresa> findById(Integer id);
+	//
+	// public List<Empresa> findAll();
+	//
+	// public Optional<Empresa> findByNombre(String nombre);
 }

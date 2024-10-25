@@ -14,7 +14,6 @@ import co.edu.unbosque.model.Accion;
 import co.edu.unbosque.repository.AccionRepository;
 import co.edu.unbosque.repository.EmpresaRepository;
 import co.edu.unbosque.service.AccionService;
-import co.edu.unbosque.service.DivisaService;
 import co.edu.unbosque.service.EmpresaService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 import co.edu.unbosque.model.Empresa;
-import co.edu.unbosque.model.Divisa;
-import co.edu.unbosque.repository.DivisaRepository;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,15 +32,13 @@ public class AccionController {
 
 	@Autowired
 	private AccionService accionService;
-	@Autowired
-	private DivisaService divisasService;
+
 	@Autowired
 	private EmpresaService empresaService;
 
 	@PostMapping("/accion")
 	public ResponseEntity<Accion> add(@RequestParam Integer empresa_id, @RequestParam Double precio_actual,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_actualizacion,
-			@RequestParam Integer divisa_id) {
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_actualizacion) {
 
 		// Validar que el precio no sea negativo
 		if (precio_actual < 0) {
@@ -61,16 +56,10 @@ public class AccionController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
-		Optional<Divisa> divisOpt = divisasService.getDivisaById(divisa_id);
-		if (!divisOpt.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-
 		Accion accion = new Accion();
 		accion.setEmpresa(empresaOpt.get());
 		accion.setPrecio_actual(precio_actual);
 		accion.setFecha_actualizacion(fecha_actualizacion);
-		accion.setDivisa(divisOpt.get());
 
 		accionService.createAccion(accion);
 
@@ -102,17 +91,13 @@ public class AccionController {
 	@PutMapping("/accion/{id}")
 	public ResponseEntity<Accion> update(@RequestParam Integer empresa_id, @RequestParam Double precio_actual,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_actualizacion,
-			@RequestParam Integer divisa_id, @RequestParam Integer accion_id) {
+			@RequestParam Integer accion_id) {
 
 		Optional<Empresa> empresaOpt = empresaService.getEmpresaById(empresa_id);
 		if (!empresaOpt.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
-		Optional<Divisa> divisaOpt = divisasService.getDivisaById(divisa_id);
-		if (!divisaOpt.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
 		Optional<Accion> accionOpt = accionService.getAccionById(accion_id);
 		if (!accionOpt.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -122,7 +107,6 @@ public class AccionController {
 			acc.setEmpresa(empresaOpt.get());
 			acc.setPrecio_actual(precio_actual);
 			acc.setFecha_actualizacion(fecha_actualizacion);
-			acc.setDivisa(divisaOpt.get());
 			accionService.createAccion(acc);
 
 			return ResponseEntity.status(HttpStatus.OK).body(acc);
@@ -131,7 +115,6 @@ public class AccionController {
 			accion.setEmpresa(empresaOpt.get());
 			accion.setPrecio_actual(precio_actual);
 			accion.setFecha_actualizacion(fecha_actualizacion);
-			accion.setDivisa(divisaOpt.get());
 			accion.setAccion_id(accion_id);
 			accionService.createAccion(accion);
 

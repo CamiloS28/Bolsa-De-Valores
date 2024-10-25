@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unbosque.repository.EmpresaRepository;
-import co.edu.unbosque.model.Divisa;
 import co.edu.unbosque.model.Empresa;
-import co.edu.unbosque.repository.DivisaRepository;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import java.util.List;
@@ -21,8 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
-import co.edu.unbosque.repository.DivisaRepository;
-
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
@@ -31,24 +27,16 @@ public class EmpresaController {
     @Autowired
     private EmpresaRepository empresaRepository;
 
-    @Autowired
-    private DivisaRepository divisaRepository;
-
     @PostMapping("/empresa")
     public ResponseEntity<Empresa> add(@RequestParam String nombre, @RequestParam String sector,
             @RequestParam String pais,
-            @RequestParam Double valor_mercado, @RequestParam Integer divisa_id) {
-
-        Optional<Divisa> divisaOpt = divisaRepository.findById(divisa_id);
-        if (!divisaOpt.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+            @RequestParam Double valor_mercado) {
 
         if (empresaRepository.findByNombre(nombre).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        Empresa empresa = new Empresa(nombre, sector, pais, valor_mercado, divisaOpt.get());
+        Empresa empresa = new Empresa(nombre, sector, pais, valor_mercado);
         empresaRepository.save(empresa);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(empresa);
@@ -66,12 +54,7 @@ public class EmpresaController {
     @PutMapping("/empresa/{id}")
     public ResponseEntity<Empresa> update(@RequestParam String nombre, @RequestParam String sector,
             @RequestParam String pais,
-            @RequestParam Double valor_mercado, @RequestParam Integer divisa_id, @RequestParam Integer empresa_id) {
-
-        Optional<Divisa> divisaOpt = divisaRepository.findById(divisa_id);
-        if (!divisaOpt.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+            @RequestParam Double valor_mercado, @RequestParam Integer empresa_id) {
 
         Optional<Empresa> empresaOpt = empresaRepository.findById(empresa_id);
         if (!empresaOpt.isPresent()) {
@@ -83,7 +66,6 @@ public class EmpresaController {
             empr.setSector(sector);
             empr.setPais(pais);
             empr.setValor_mercado(valor_mercado);
-            empr.setDivisa(divisaOpt.get());
 
             empresaRepository.save(empr);
             return ResponseEntity.status(HttpStatus.OK).body(empr);
@@ -93,7 +75,6 @@ public class EmpresaController {
             empresa.setSector(sector);
             empresa.setPais(pais);
             empresa.setValor_mercado(valor_mercado);
-            empresa.setDivisa(divisaOpt.get());
             empresa.setEmpresa_id(empresa_id);
             empresaRepository.save(empresa);
             return ResponseEntity.status(HttpStatus.OK).body(empresa);

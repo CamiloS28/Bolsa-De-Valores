@@ -15,7 +15,6 @@ import co.edu.unbosque.repository.Alerta_InversionistaRepository;
 import co.edu.unbosque.repository.InversionistaRepository;
 import co.edu.unbosque.service.AccionService;
 import co.edu.unbosque.service.Alerta_InversionistaService;
-import co.edu.unbosque.service.DivisaService;
 import co.edu.unbosque.service.InversionistaService;
 
 import org.springframework.web.bind.annotation.PostMapping;
