@@ -24,43 +24,41 @@ import java.util.Date;
 
 import co.edu.unbosque.model.Usuario;
 import co.edu.unbosque.repository.UsuarioRepository;
+import co.edu.unbosque.service.UsuarioService;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class UsuarioController {
 	@Autowired
-	private UsuarioRepository usrdao;
+	private UsuarioService usuarioService;
 
 	@PostMapping(path = "/usuario")
 	public ResponseEntity<Usuario> add(@RequestParam String nombre, @RequestParam String email,
 			@RequestParam String contraseña, @RequestParam String rol,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_creacion) {
 
-		List<Usuario> all = (List<Usuario>) usrdao.findAll();
-
-		for (int i = 0; i < all.size(); i++) {
-			if (all.get(i).getNombre().equals(nombre) && all.get(i).getEmail().equals(email)
-					&& all.get(i).getContraseña().equals(contraseña) && all.get(i).getRol().equals(rol)
-					&& all.get(i).getFecha_creacion().equals(fecha_creacion)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		List<Usuario> allUsuarios = usuarioService.getAll();
+		for (Usuario usuarioExistente : allUsuarios) {
+			if (usuarioExistente.getEmail().equals(email)) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
 			}
 		}
 
-		Usuario uc = new Usuario();
-		uc.setNombre(nombre);
-		uc.setEmail(email);
-		uc.setContraseña(contraseña);
-		uc.setRol(rol);
-		uc.setFecha_creacion(fecha_creacion);
-		usrdao.save(uc);
+		Usuario usuario = new Usuario();
+		usuario.setNombre(nombre);
+		usuario.setEmail(email);
+		usuario.setContraseña(contraseña);
+		usuario.setRol(rol);
+		usuario.setFecha_creacion(fecha_creacion);
+		usuarioService.createUsuario(usuario);
 
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(uc);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(usuario);
 	}
 
 	@GetMapping("/usuario")
 	public ResponseEntity<List<Usuario>> mostrarTodo() {
-		List<Usuario> lista = (List<Usuario>) usrdao.findAll();
+		List<Usuario> lista = (List<Usuario>) usuarioService.getAll();
 
 		if (lista.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -70,7 +68,7 @@ public class UsuarioController {
 
 	@GetMapping("/login")
 	public ResponseEntity<Usuario> login(@RequestParam String email, @RequestParam String contraseña) {
-		List<Usuario> all = (List<Usuario>) usrdao.findAll();
+		List<Usuario> all = (List<Usuario>) usuarioService.getAll();
 		Usuario foundUsuario = null;
 
 		for (Usuario usuario : all) {
@@ -89,7 +87,7 @@ public class UsuarioController {
 
 	@GetMapping("/usuarioExistentes")
 	public ResponseEntity<String> getExists() {
-		List<Usuario> all = (List<Usuario>) usrdao.findAll();
+		List<Usuario> all = (List<Usuario>) usuarioService.getAll();
 		if (all.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.FOUND).body(null);
 		}
@@ -98,7 +96,7 @@ public class UsuarioController {
 
 	@GetMapping("/usuario/{id}")
 	public ResponseEntity<Usuario> getOne(@PathVariable Integer id) {
-		Optional<Usuario> op = usrdao.findById(id);
+		Optional<Usuario> op = usuarioService.getUsuarioById(id);
 		if (op.isPresent()) {
 			return ResponseEntity.status(HttpStatus.OK).body(op.get());
 		}
@@ -107,45 +105,43 @@ public class UsuarioController {
 
 	@DeleteMapping("/usuario/{id}")
 	public ResponseEntity<String> delete(@PathVariable Integer id) {
-		Optional<Usuario> op = usrdao.findById(id);
+		Optional<Usuario> op = usuarioService.getUsuarioById(id);
 		if (!op.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
 		}
-		usrdao.deleteById(id);
+		usuarioService.deleteUsuario(id);
 		return ResponseEntity.status(HttpStatus.FOUND).body("Deleted");
 	}
 
 	@PutMapping("/usuario/{id}")
-	public ResponseEntity<Boolean> update(@RequestParam String nombre, @RequestParam String email,
+	public ResponseEntity<Usuario> update(@RequestParam String nombre, @RequestParam String email,
 			@RequestParam String contraseña, @RequestParam String rol,
 			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha_creacion, @PathVariable Integer id) {
 
-		Optional<Usuario> op = usrdao.findById(id);
+		Optional<Usuario> op = usuarioService.getUsuarioById(id);
 		if (!op.isPresent()) {
-			return ResponseEntity.ok(false);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		return op.map(usr -> {
-			usr.setNombre(nombre);
-			usr.setEmail(email);
-			usr.setContraseña(contraseña);
-			usr.setRol(rol);
-			usr.setFecha_creacion(fecha_creacion);
 
-			usrdao.save(usr);
-			return ResponseEntity.ok(true);
-		}).orElseGet(() -> {
-			Usuario nuevo = new Usuario();
+		List<Usuario> allUsuarios = usuarioService.getAll();
+		for (Usuario usuarioExistente : allUsuarios) {
+			if (usuarioExistente.getEmail().equals(email)) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			}
+		}
 
-			nuevo.setUsuario_id(id);
+		Usuario usuario = new Usuario();
 
-			nuevo.setNombre(nombre);
-			nuevo.setEmail(email);
-			nuevo.setContraseña(contraseña);
-			nuevo.setRol(rol);
-			nuevo.setFecha_creacion(fecha_creacion);
-			usrdao.save(nuevo);
-			return ResponseEntity.ok(true);
-		});
+		usuario.setUsuario_id(id);
+
+		usuario.setNombre(nombre);
+		usuario.setEmail(email);
+		usuario.setContraseña(contraseña);
+		usuario.setRol(rol);
+		usuario.setFecha_creacion(fecha_creacion);
+		usuarioService.updateUsuario(usuario);
+		return ResponseEntity.status(HttpStatus.OK).body(usuario);
+
 	}
 
 }

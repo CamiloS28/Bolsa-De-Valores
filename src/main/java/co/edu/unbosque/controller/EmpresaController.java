@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import co.edu.unbosque.repository.EmpresaRepository;
+import co.edu.unbosque.service.EmpresaService;
 import co.edu.unbosque.model.Empresa;
 
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,26 +25,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class EmpresaController {
 
     @Autowired
-    private EmpresaRepository empresaRepository;
+    private EmpresaService empresaService;
 
     @PostMapping("/empresa")
     public ResponseEntity<Empresa> add(@RequestParam String nombre, @RequestParam String sector,
             @RequestParam String pais,
             @RequestParam Double valor_mercado) {
 
-        if (empresaRepository.findByNombre(nombre).isPresent()) {
+        if (empresaService.getEmpresaByname(nombre).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        Empresa empresa = new Empresa(nombre, sector, pais, valor_mercado);
-        empresaRepository.save(empresa);
+        Empresa empresa = new Empresa();
+        empresa.setNombre(nombre);
+        empresa.setSector(sector);
+        empresa.setPais(pais);
+        empresa.setValor_mercado(valor_mercado);
+
+        empresaService.createEmpresa(empresa);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(empresa);
     }
 
     @GetMapping("/empresa")
     public ResponseEntity<List<Empresa>> mostrarTodo() {
-        List<Empresa> listaEmpresas = empresaRepository.findAll();
+
+        List<Empresa> listaEmpresas = empresaService.getAll();
         if (listaEmpresas.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -52,44 +58,34 @@ public class EmpresaController {
     }
 
     @PutMapping("/empresa/{id}")
-    public ResponseEntity<Empresa> update(@RequestParam String nombre, @RequestParam String sector,
-            @RequestParam String pais,
-            @RequestParam Double valor_mercado, @RequestParam Integer empresa_id) {
+    public ResponseEntity<Empresa> update(@PathVariable Integer id, @RequestParam String nombre,
+            @RequestParam String sector, @RequestParam String pais, @RequestParam Double valor_mercado) {
 
-        Optional<Empresa> empresaOpt = empresaRepository.findById(empresa_id);
+        Optional<Empresa> empresaOpt = empresaService.getEmpresaById(id);
         if (!empresaOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return empresaOpt.map(empr -> {
-            empr.setNombre(nombre);
-            empr.setSector(sector);
-            empr.setPais(pais);
-            empr.setValor_mercado(valor_mercado);
+        Empresa empresa = empresaOpt.get();
+        empresa.setNombre(nombre);
+        empresa.setSector(sector);
+        empresa.setPais(pais);
+        empresa.setValor_mercado(valor_mercado);
 
-            empresaRepository.save(empr);
-            return ResponseEntity.status(HttpStatus.OK).body(empr);
-        }).orElseGet(() -> {
-            Empresa empresa = new Empresa();
-            empresa.setNombre(nombre);
-            empresa.setSector(sector);
-            empresa.setPais(pais);
-            empresa.setValor_mercado(valor_mercado);
-            empresa.setEmpresa_id(empresa_id);
-            empresaRepository.save(empresa);
-            return ResponseEntity.status(HttpStatus.OK).body(empresa);
-        });
+        empresaService.createEmpresa(empresa);
+        return ResponseEntity.status(HttpStatus.OK).body(empresa);
+
     }
 
     @DeleteMapping("/empresa/{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
 
-        Optional<Empresa> empresaOpt = empresaRepository.findById(id);
+        Optional<Empresa> empresaOpt = empresaService.getEmpresaById(id);
         if (!empresaOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
 
-        empresaRepository.deleteById(id);
+        empresaService.deleteEmpresa(id);
 
         return ResponseEntity.status(HttpStatus.FOUND).body("Deleted");
     }

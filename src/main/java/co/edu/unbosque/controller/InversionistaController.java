@@ -4,16 +4,15 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
-import co.edu.unbosque.repository.InversionistaRepository;
 import co.edu.unbosque.model.Inversionista;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import java.util.Optional;
-import co.edu.unbosque.repository.UsuarioRepository;
+import co.edu.unbosque.service.InversionistaService;
+import co.edu.unbosque.service.UsuarioService;
 import co.edu.unbosque.model.Usuario;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,31 +25,24 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class InversionistaController {
 
     @Autowired
-    private InversionistaRepository inversionistaRepository;
-    public ArrayList<Inversionista> inversionistas = new ArrayList<Inversionista>();
-    public int variant = 0;
+    private InversionistaService inversionistaService;
 
     @Autowired
-    private UsuarioRepository suarioRepository;
+    private UsuarioService usuarioService;
 
     @PostMapping("/inversionista")
     public ResponseEntity<Inversionista> add(@RequestParam String perfil_riesgo, @RequestParam String pais,
             @RequestParam Integer usuario_id) {
 
-        Optional<Usuario> usuarioOpt = suarioRepository.findById(usuario_id);
+        Optional<Usuario> usuarioOpt = usuarioService.getUsuarioById(usuario_id);
         if (!usuarioOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         Usuario usuario = usuarioOpt.get();
 
-        // Verificar si ya existe un inversionista para el usuario
-        if (inversionistaRepository.existsById(usuario.getUsuario_id())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
         Inversionista inversionista = new Inversionista(usuario, perfil_riesgo, pais);
-        inversionistaRepository.save(inversionista);
+        inversionistaService.createInversionista(inversionista);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(inversionista);
     }
@@ -58,7 +50,7 @@ public class InversionistaController {
     @GetMapping("/inversionista")
     public ResponseEntity<List<Inversionista>> mostrarTodo() {
 
-        List<Inversionista> listaInversionistas = inversionistaRepository.findAll();
+        List<Inversionista> listaInversionistas = inversionistaService.getAll();
 
         if (listaInversionistas.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -70,42 +62,37 @@ public class InversionistaController {
     @DeleteMapping("/inversionista/{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
 
-        Optional<Inversionista> inversionistaOpt = inversionistaRepository.findById(id);
+        Optional<Inversionista> inversionistaOpt = inversionistaService.getInversionistaById(id);
         if (!inversionistaOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
-        inversionistaRepository.deleteById(id);
+        inversionistaService.deleteInversionista(id);
 
         return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
 
     @PutMapping("/inversionista/{id}")
-    public ResponseEntity<Boolean> update(@RequestParam String perfil_riesgo, @RequestParam String pais,
-            @RequestParam Integer inversionista_id) {
+    public ResponseEntity<Boolean> update(@PathVariable Integer id, @RequestParam String perfil_riesgo,
+            @RequestParam String pais) {
 
-        Optional<Inversionista> inversionistaOpt = inversionistaRepository.findById(inversionista_id);
-        if (!inversionistaOpt.isPresent()) {
+        Optional<Inversionista> inversionistaOpt = inversionistaService.getInversionistaById(id);
+        Optional<Usuario> usuarioOpt = usuarioService.getUsuarioById(id);
+
+        if (!inversionistaOpt.isPresent() || !usuarioOpt.isPresent()) {
             return ResponseEntity.ok(false);
         }
-        return inversionistaOpt.map(invr -> {
-            invr.setPerfil_riesgo(perfil_riesgo);
-            invr.setPais(pais);
+        Inversionista nuevo = new Inversionista();
+        nuevo.setInversionista_id(id);
+        nuevo.setPerfil_riesgo(perfil_riesgo);
+        nuevo.setPais(pais);
+        inversionistaService.createInversionista(nuevo);
+        return ResponseEntity.ok(true);
 
-            inversionistaRepository.save(invr);
-            return ResponseEntity.ok(true);
-        }).orElseGet(() -> {
-            Inversionista nuevo = new Inversionista();
-            nuevo.setInversionista_id(inversionista_id);
-            nuevo.setPerfil_riesgo(perfil_riesgo);
-            nuevo.setPais(pais);
-            inversionistaRepository.save(nuevo);
-            return ResponseEntity.ok(true);
-        });
     }
 
     @GetMapping("/inversionista/{id}")
     public ResponseEntity<Inversionista> getOne(@PathVariable Integer id) {
-        Optional<Inversionista> inversionistaOpt = inversionistaRepository.findById(id);
+        Optional<Inversionista> inversionistaOpt = inversionistaService.getInversionistaById(id);
         if (inversionistaOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(inversionistaOpt.get());
         }

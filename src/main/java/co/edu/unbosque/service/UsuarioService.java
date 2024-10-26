@@ -12,6 +12,7 @@ import co.edu.unbosque.repository.UsuarioRepository;
 @Service
 public class UsuarioService {
 
+	@Autowired
 	private UsuarioRepository repository;
 
 	public List<Usuario> getAll() {

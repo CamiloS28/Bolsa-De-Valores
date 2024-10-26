@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.edu.unbosque.model.Empresa;
-import co.edu.unbosque.model.Empresa;
 import co.edu.unbosque.repository.EmpresaRepository;
 
 @Service
