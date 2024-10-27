@@ -112,4 +112,14 @@ public class ContratoController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(contrato.get());
 	}
 
+	@GetMapping("/contrato/comisionista/{comisionistaId}/inversionistas")
+	public ResponseEntity<List<Inversionista>> getInversionistasByComisionistaId(
+			@PathVariable Integer comisionistaId) {
+		List<Inversionista> inversionistas = contratoService.obtenerInversionistasPorComisionista(comisionistaId);
+		if (inversionistas.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(inversionistas);
+	}
+
 }

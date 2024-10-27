@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.edu.unbosque.model.Contrato;
+import co.edu.unbosque.model.Inversionista;
 import co.edu.unbosque.repository.ContratoRepository;
 
 @Service
@@ -34,6 +35,10 @@ public class ContratoService {
 
 	public void deleteContrato(int id) {
 		repository.deleteById(id);
+	}
+
+	public List<Inversionista> obtenerInversionistasPorComisionista(Integer comisionistaId) {
+		return repository.findInversionistasByComisionistaId(comisionistaId);
 	}
 
 }
