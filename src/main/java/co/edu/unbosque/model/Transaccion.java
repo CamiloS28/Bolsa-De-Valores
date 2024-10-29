@@ -49,11 +49,13 @@ public class Transaccion {
     @JoinColumn(name = "contrato_id", nullable = false)
     private Contrato contrato;
 
+    private boolean estado;
+
     public Transaccion() {
     }
 
     public Transaccion(Inversionista inversionista, Accion accion, Comisionista comisionista,
-            String tipo, Date fecha, Double cantidad, Double precio, Double monto_total) {
+            String tipo, Date fecha, Double cantidad, Double precio, Double monto_total, boolean estado) {
         this.inversionista = inversionista;
         this.accion = accion;
         this.comisionista = comisionista;
@@ -62,6 +64,7 @@ public class Transaccion {
         this.cantidad = cantidad;
         this.precio = precio;
         this.monto_total = monto_total;
+        this.estado = estado;
     }
 
     // Getters y Setters
@@ -135,6 +138,22 @@ public class Transaccion {
 
     public void setMonto_total(Double monto_total) {
         this.monto_total = monto_total;
+    }
+
+    public Contrato getContrato() {
+        return contrato;
+    }
+
+    public void setContrato(Contrato contrato) {
+        this.contrato = contrato;
+    }
+
+    public void setestado(boolean estado) {
+        this.estado = estado;
+    }
+
+    public boolean getestado() {
+        return estado;
     }
 
 }

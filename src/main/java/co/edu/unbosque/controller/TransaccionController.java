@@ -48,7 +48,7 @@ public class TransaccionController {
             @RequestParam Integer comisionista_id, @RequestParam String tipo,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha, @RequestParam Double cantidad,
             @RequestParam Double precio,
-            @RequestParam Double monto_total) {
+            @RequestParam Double monto_total, @RequestParam boolean estado) {
 
         Optional<Inversionista> inversionistaOpt = inversionistaService.getInversionistaById(inversionista_id);
         if (!inversionistaOpt.isPresent()) {
@@ -74,6 +74,7 @@ public class TransaccionController {
         transaccion.setPrecio(precio);
         transaccion.setFecha(fecha);
         transaccion.setMonto_total(monto_total);
+        transaccion.setestado(estado);
 
         transaccionService.createTransaccion(transaccion);
         return ResponseEntity.status(HttpStatus.CREATED).body(transaccion);
@@ -118,7 +119,8 @@ public class TransaccionController {
     public ResponseEntity<Transaccion> update(@PathVariable Integer id, @RequestParam Integer inversionista_id,
             @RequestParam Integer accion_id, @RequestParam Integer comisionista_id,
             @RequestParam String tipo, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fecha,
-            @RequestParam Double cantidad, @RequestParam Double precio, @RequestParam Double monto_total) {
+            @RequestParam Double cantidad, @RequestParam Double precio, @RequestParam Double monto_total,
+            @RequestParam boolean estado) {
 
         Optional<Transaccion> transaccionOpt = transaccionService.getTransaccionById(id);
         if (!transaccionOpt.isPresent()) {
@@ -149,6 +151,7 @@ public class TransaccionController {
         transaccion.setPrecio(precio);
         transaccion.setFecha(fecha);
         transaccion.setMonto_total(monto_total);
+        transaccion.setestado(estado);
 
         transaccionService.createTransaccion(transaccion);
         return ResponseEntity.status(HttpStatus.OK).body(transaccion);
