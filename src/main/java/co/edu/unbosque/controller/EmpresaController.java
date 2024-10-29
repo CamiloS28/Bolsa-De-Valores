@@ -29,8 +29,7 @@ public class EmpresaController {
 
     @PostMapping("/empresa")
     public ResponseEntity<Empresa> add(@RequestParam String nombre, @RequestParam String sector,
-            @RequestParam String pais,
-            @RequestParam Double valor_mercado) {
+            @RequestParam String pais) {
 
         if (empresaService.getEmpresaByname(nombre).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -40,7 +39,6 @@ public class EmpresaController {
         empresa.setNombre(nombre);
         empresa.setSector(sector);
         empresa.setPais(pais);
-        empresa.setValor_mercado(valor_mercado);
 
         empresaService.createEmpresa(empresa);
 
@@ -59,7 +57,7 @@ public class EmpresaController {
 
     @PutMapping("/empresa/{id}")
     public ResponseEntity<Empresa> update(@PathVariable Integer id, @RequestParam String nombre,
-            @RequestParam String sector, @RequestParam String pais, @RequestParam Double valor_mercado) {
+            @RequestParam String sector, @RequestParam String pais) {
 
         Optional<Empresa> empresaOpt = empresaService.getEmpresaById(id);
         if (!empresaOpt.isPresent()) {
@@ -70,7 +68,6 @@ public class EmpresaController {
         empresa.setNombre(nombre);
         empresa.setSector(sector);
         empresa.setPais(pais);
-        empresa.setValor_mercado(valor_mercado);
 
         empresaService.createEmpresa(empresa);
         return ResponseEntity.status(HttpStatus.OK).body(empresa);

@@ -22,16 +22,13 @@ public class Empresa {
 
     private String pais;
 
-    private Double valor_mercado;
-
     public Empresa() {
     }
 
-    public Empresa(String nombre, String sector, String pais, Double valor_mercado) {
+    public Empresa(String nombre, String sector, String pais) {
         this.nombre = nombre;
         this.sector = sector;
         this.pais = pais;
-        this.valor_mercado = valor_mercado;
     }
 
     // Getters y Setters
@@ -66,13 +63,4 @@ public class Empresa {
     public void setPais(String pais) {
         this.pais = pais;
     }
-
-    public Double getValor_mercado() {
-        return valor_mercado;
-    }
-
-    public void setValor_mercado(Double valor_mercado) {
-        this.valor_mercado = valor_mercado;
-    }
-
 }
