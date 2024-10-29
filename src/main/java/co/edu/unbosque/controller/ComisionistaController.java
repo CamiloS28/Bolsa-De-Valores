@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unbosque.model.Usuario;
 import co.edu.unbosque.repository.UsuarioRepository;
-import co.edu.unbosque.service.Alerta_InversionistaService;
 import co.edu.unbosque.service.ComisionistaService;
 import co.edu.unbosque.service.InversionistaService;
 import co.edu.unbosque.service.UsuarioService;
@@ -33,8 +32,6 @@ public class ComisionistaController {
 	private UsuarioService usuarioService;
 	@Autowired
 	private ComisionistaService comisionistaService;
-
-
 
 	@PostMapping("/comisionista")
 	public ResponseEntity<Comisionista> addComisionista(@RequestParam String empresa, @RequestParam Double comision,
