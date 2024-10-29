@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unbosque.model.Usuario;
 import co.edu.unbosque.repository.UsuarioRepository;
-
+import co.edu.unbosque.service.ComisionistaService;
+import co.edu.unbosque.service.InversionistaService;
+import co.edu.unbosque.service.UsuarioService;
 import co.edu.unbosque.model.Comisionista;
 import co.edu.unbosque.repository.ComisionistaRepository;
 
@@ -27,34 +29,35 @@ import co.edu.unbosque.repository.ComisionistaRepository;
 public class ComisionistaController {
 
 	@Autowired
-	private UsuarioRepository usuarioRepository;
-
+	private UsuarioService usuarioService;
 	@Autowired
-	private ComisionistaRepository comisionistaRepo;
+	private ComisionistaService comisionistaService;
 
 	@PostMapping("/comisionista")
 	public ResponseEntity<Comisionista> addComisionista(@RequestParam String empresa, @RequestParam Double comision,
 			@RequestParam String pais, @RequestParam Integer usuarioId) {
 
-		Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+		Optional<Usuario> usuarioOpt = usuarioService.getUsuarioById(usuarioId);
 		if (!usuarioOpt.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
 		Usuario usuario = usuarioOpt.get();
-		if (comisionistaRepo.existsById(usuario.getUsuario_id())) {
+
+		if (comisionistaService.existsById(usuario.getUsuario_id())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 
 		}
 
 		Comisionista comisionista = new Comisionista(usuario, empresa, comision, pais);
-		comisionistaRepo.save(comisionista);
+		comisionistaService.createComisionista(comisionista);
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(comisionista);
 	}
 
 	@GetMapping("/comisionista")
 	public ResponseEntity<List<Comisionista>> getAllComisionistas() {
-		List<Comisionista> comisionistas = comisionistaRepo.findAll();
+		List<Comisionista> comisionistas = comisionistaService.getAll();
 		if (comisionistas.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}
@@ -63,7 +66,7 @@ public class ComisionistaController {
 
 	@GetMapping("/comisionista/{id}")
 	public ResponseEntity<Comisionista> getComisionistaById(@PathVariable Integer id) {
-		Optional<Comisionista> comisionista = comisionistaRepo.findById(id);
+		Optional<Comisionista> comisionista = comisionistaService.getComisionistaById(id);
 		if (comisionista.isPresent()) {
 			return ResponseEntity.status(HttpStatus.OK).body(comisionista.get());
 		}
@@ -71,10 +74,10 @@ public class ComisionistaController {
 	}
 
 	@PutMapping("/comisionista/{id}")
-	public ResponseEntity<Boolean> updateComisionista(@RequestParam String empresa,
-			@RequestParam Double comision, @RequestParam String pais, @RequestParam Integer comisionista_id) {
+	public ResponseEntity<Boolean> updateComisionista(@RequestParam String empresa, @RequestParam Double comision,
+			@RequestParam String pais, @RequestParam Integer comisionista_id) {
 
-		Optional<Comisionista> comisionistaOptional = comisionistaRepo.findById(comisionista_id);
+		Optional<Comisionista> comisionistaOptional = comisionistaService.getComisionistaById(comisionista_id);
 
 		if (!comisionistaOptional.isPresent()) {
 			return ResponseEntity.ok(false);
@@ -84,8 +87,8 @@ public class ComisionistaController {
 			comi.setEmpresa(empresa);
 			comi.setComision(comision);
 			comi.setPais(pais);
+			comisionistaService.createComisionista(comi);
 
-			comisionistaRepo.save(comi);
 			return ResponseEntity.ok(true);
 		}).orElseGet(() -> {
 			Comisionista nuevo = new Comisionista();
@@ -93,20 +96,21 @@ public class ComisionistaController {
 			nuevo.setEmpresa(empresa);
 			nuevo.setComision(comision);
 			nuevo.setPais(pais);
-			comisionistaRepo.save(nuevo);
+			comisionistaService.createComisionista(nuevo);
+
 			return ResponseEntity.ok(true);
 		});
 	}
 
 	@DeleteMapping("/comisionista/{id}")
 	public ResponseEntity<String> deleteComisionista(@PathVariable Integer id) {
-		Optional<Comisionista> comisionistaOptional = comisionistaRepo.findById(id);
+		Optional<Comisionista> comisionistaOptional = comisionistaService.getComisionistaById(id);
 
 		if (!comisionistaOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
-		comisionistaRepo.deleteById(id);
+		comisionistaService.deleteComisionista(id);
 		return ResponseEntity.status(HttpStatus.OK).body("Comisionista eliminado exitosamente");
 	}
 }

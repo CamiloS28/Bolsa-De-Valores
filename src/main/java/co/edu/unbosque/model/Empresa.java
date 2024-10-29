@@ -24,19 +24,14 @@ public class Empresa {
 
     private Double valor_mercado;
 
-    @ManyToOne
-    @JoinColumn(name = "divisa_id", nullable = false)
-    private Divisa divisa;
-
     public Empresa() {
     }
 
-    public Empresa(String nombre, String sector, String pais, Double valor_mercado, Divisa divisa) {
+    public Empresa(String nombre, String sector, String pais, Double valor_mercado) {
         this.nombre = nombre;
         this.sector = sector;
         this.pais = pais;
         this.valor_mercado = valor_mercado;
-        this.divisa = divisa;
     }
 
     // Getters y Setters
@@ -80,11 +75,4 @@ public class Empresa {
         this.valor_mercado = valor_mercado;
     }
 
-    public Divisa getDivisa() {
-        return divisa;
-    }
-
-    public void setDivisa(Divisa divisa) {
-        this.divisa = divisa;
-    }
 }

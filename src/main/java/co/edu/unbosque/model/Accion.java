@@ -30,18 +30,13 @@ public class Accion {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_actualizacion;
 
-    @ManyToOne
-    @JoinColumn(name = "divisa_id", nullable = false)
-    private Divisa divisa;
-
     public Accion() {
     }
 
-    public Accion(Empresa empresa, Double precio_actual, Date fecha_actualizacion, Divisa divisa) {
+    public Accion(Empresa empresa, Double precio_actual, Date fecha_actualizacion) {
         this.empresa = empresa;
         this.precio_actual = precio_actual;
         this.fecha_actualizacion = fecha_actualizacion;
-        this.divisa = divisa;
     }
 
     // Getters y Setters
@@ -75,14 +70,6 @@ public class Accion {
 
     public void setFecha_actualizacion(Date fecha_actualizacion) {
         this.fecha_actualizacion = fecha_actualizacion;
-    }
-
-    public Divisa getDivisa() {
-        return divisa;
-    }
-
-    public void setDivisa(Divisa divisa) {
-        this.divisa = divisa;
     }
 
 }

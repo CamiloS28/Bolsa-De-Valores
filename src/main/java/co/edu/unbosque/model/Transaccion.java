@@ -33,10 +33,6 @@ public class Transaccion {
     @JoinColumn(name = "comisionista_id", nullable = false)
     private Comisionista comisionista;
 
-    @ManyToOne
-    @JoinColumn(name = "divisa_id", nullable = false)
-    private Divisa divisa;
-
     private String tipo;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -56,12 +52,11 @@ public class Transaccion {
     public Transaccion() {
     }
 
-    public Transaccion(Inversionista inversionista, Accion accion, Comisionista comisionista, Divisa divisa,
+    public Transaccion(Inversionista inversionista, Accion accion, Comisionista comisionista,
             String tipo, Date fecha, Double cantidad, Double precio, Double monto_total) {
         this.inversionista = inversionista;
         this.accion = accion;
         this.comisionista = comisionista;
-        this.divisa = divisa;
         this.tipo = tipo;
         this.fecha = fecha;
         this.cantidad = cantidad;
@@ -100,14 +95,6 @@ public class Transaccion {
 
     public void setComisionista(Comisionista comisionista) {
         this.comisionista = comisionista;
-    }
-
-    public Divisa getDivisa() {
-        return divisa;
-    }
-
-    public void setDivisa(Divisa divisa) {
-        this.divisa = divisa;
     }
 
     public String getTipo() {
