@@ -112,6 +112,16 @@ public class ContratoController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(contrato.get());
 	}
 
+	@PutMapping("/contrato/cancelar/{id}")
+	public ResponseEntity<Contrato> cancelarContrato(@PathVariable Integer id) {
+		Optional<Contrato> contratoOpt = contratoService.getContratoById(id);
+		if (!contratoOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		Contrato contrato = contratoService.cancelarContrato(id);
+		return ResponseEntity.status(HttpStatus.OK).body(contrato);
+	}
+
 	@GetMapping("/contrato/comisionista/{comisionistaId}/inversionistas")
 	public ResponseEntity<List<Inversionista>> getInversionistasByComisionistaId(
 			@PathVariable Integer comisionistaId) {

@@ -41,4 +41,10 @@ public class ContratoService {
 		return repository.findInversionistasByComisionistaId(comisionistaId);
 	}
 
+	public Contrato cancelarContrato (int id) {
+		Contrato contrato = repository.findById(id).get();
+		contrato.setEstado(false);
+		return repository.save(contrato);
+	}
+
 }
