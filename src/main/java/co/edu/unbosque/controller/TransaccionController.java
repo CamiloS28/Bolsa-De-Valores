@@ -97,13 +97,41 @@ public class TransaccionController {
 	}
 
 	@GetMapping("/transaccion")
-	public ResponseEntity<Transaccion> mostrarTodo() {
+	public ResponseEntity<List<Transaccion>> mostrarTodo() {
 
 		List<Transaccion> listaTransaccion = transaccionService.getAll();
 		if (listaTransaccion.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(listaTransaccion.get(0));
+		return ResponseEntity.status(HttpStatus.OK).body(listaTransaccion);
+	}
+
+	@GetMapping("/transaccion/{id}/{nombre}")
+	public ResponseEntity<Boolean> verificarCompra(@PathVariable Integer id, @PathVariable String nombre) {
+
+		int id_empresa = 0;
+		boolean verificado = false;
+		List<Transaccion> listaTransaccion = transaccionService.getAll();
+
+		if (listaTransaccion.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); // Devuelve false si no hay transacciones
+		}
+
+		Optional<Empresa> empresaOpt = empresaService.getEmpresaByname(nombre);
+		if (!empresaOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); // Devuelve false si la empresa no existe
+		} else {
+			id_empresa = empresaOpt.get().getEmpresa_id();
+		}
+
+		for (Transaccion transaccion : listaTransaccion) {
+			if (transaccion.getTipo().equals("compra") && transaccion.getEmpresa().getEmpresa_id() == id_empresa) {
+				verificado = true;
+				break;
+			}
+		}
+
+		return ResponseEntity.ok(verificado); // Devuelve el estado de verificado
 	}
 
 	@GetMapping("/transaccion/{id}")
@@ -166,9 +194,7 @@ public class TransaccionController {
 		return ResponseEntity.status(HttpStatus.OK).body(transaccion);
 
 	}
-	
-	
-	
+
 	@GetMapping("/transaccion/inversionista/{inversionistaId}")
 	public ResponseEntity<List<Object[]>> obtenertransaccionInv(@PathVariable Integer inversionistaId) {
 		List<Object[]> resultados = transaccionService.getTransaccionesPorInversionistaId(inversionistaId);
