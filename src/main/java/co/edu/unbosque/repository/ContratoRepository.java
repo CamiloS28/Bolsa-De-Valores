@@ -11,4 +11,7 @@ public interface ContratoRepository extends JpaRepository<Contrato, Integer> {
 
     @Query("SELECT c.inversionista FROM Contrato c WHERE c.comisionista.id = :comisionista_id")
     List<Inversionista> findInversionistasByComisionistaId(@Param("comisionista_id") int comisionistaId);
+
+    @Query(value = "SELECT comisionista_id, contrato_id FROM VistaContratosActivosInversionista WHERE inversionista_id = :inversionistaId", nativeQuery = true)
+    List<Object[]> findComisionistaIdAndContratoIdByInversionistaId(@Param("inversionistaId") Integer inversionistaId);
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import co.edu.unbosque.model.Comisionista;
 import co.edu.unbosque.model.Contrato;
 import co.edu.unbosque.model.Inversionista;
 import co.edu.unbosque.repository.ContratoRepository;
@@ -41,10 +42,13 @@ public class ContratoService {
 		return repository.findInversionistasByComisionistaId(comisionistaId);
 	}
 
-	public Contrato cancelarContrato (int id) {
+	public Contrato cancelarContrato(int id) {
 		Contrato contrato = repository.findById(id).get();
 		contrato.setEstado(false);
 		return repository.save(contrato);
 	}
 
+	public List<Object[]> obtenerComisionistaYContrato(Integer inversionistaId) {
+		return repository.findComisionistaIdAndContratoIdByInversionistaId(inversionistaId);
+	}
 }

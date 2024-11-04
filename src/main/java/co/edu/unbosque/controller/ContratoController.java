@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import co.edu.unbosque.model.Contrato;
 import co.edu.unbosque.model.Inversionista;
 import co.edu.unbosque.model.Comisionista;
-
 import co.edu.unbosque.service.ComisionistaService;
 import co.edu.unbosque.service.ContratoService;
 
@@ -132,4 +131,12 @@ public class ContratoController {
 		return ResponseEntity.status(HttpStatus.OK).body(inversionistas);
 	}
 
+	@GetMapping("/contrato/inversionista/{inversionistaId}/comisionistaContrato")
+	public ResponseEntity<List<Object[]>> obtenerComisionistaContrato(@PathVariable Integer inversionistaId) {
+		List<Object[]> resultados = contratoService.obtenerComisionistaYContrato(inversionistaId);
+		if (resultados.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(resultados);
+	}
 }
