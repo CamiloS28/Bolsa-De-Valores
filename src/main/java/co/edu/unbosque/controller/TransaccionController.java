@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import co.edu.unbosque.service.AccionService;
+
 import co.edu.unbosque.service.ComisionistaService;
 import co.edu.unbosque.service.InversionistaService;
 import co.edu.unbosque.service.TransaccionService;
 import org.springframework.web.bind.annotation.PostMapping;
 import co.edu.unbosque.model.Transaccion;
 import co.edu.unbosque.model.Inversionista;
-import co.edu.unbosque.model.Accion;
+
 import co.edu.unbosque.model.Comisionista;
 import org.springframework.web.bind.annotation.PutMapping;
 import java.util.List;
@@ -37,8 +37,6 @@ public class TransaccionController {
     @Autowired
     private InversionistaService inversionistaService;
 
-    @Autowired
-    private AccionService accionService;
 
     @Autowired
     private ComisionistaService comisionistaService;
@@ -55,10 +53,7 @@ public class TransaccionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Optional<Accion> accionOpt = accionService.getAccionById(accion_id);
-        if (!accionOpt.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+
 
         Optional<Comisionista> comisionistaOpt = comisionistaService.getComisionistaById(comisionista_id);
         if (!comisionistaOpt.isPresent()) {
@@ -67,7 +62,7 @@ public class TransaccionController {
 
         Transaccion transaccion = new Transaccion();
         transaccion.setInversionista(inversionistaOpt.get());
-        transaccion.setAccion(accionOpt.get());
+
         transaccion.setComisionista(comisionistaOpt.get());
         transaccion.setTipo(tipo);
         transaccion.setCantidad(cantidad);
@@ -132,10 +127,7 @@ public class TransaccionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        Optional<Accion> accionOpt = accionService.getAccionById(accion_id);
-        if (!accionOpt.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+
 
         Optional<Comisionista> comisionistaOpt = comisionistaService.getComisionistaById(comisionista_id);
         if (!comisionistaOpt.isPresent()) {
@@ -144,7 +136,7 @@ public class TransaccionController {
 
         Transaccion transaccion = transaccionOpt.get();
         transaccion.setInversionista(inversionistaOpt.get());
-        transaccion.setAccion(accionOpt.get());
+    
         transaccion.setComisionista(comisionistaOpt.get());
         transaccion.setTipo(tipo);
         transaccion.setCantidad(cantidad);
