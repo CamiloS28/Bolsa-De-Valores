@@ -54,8 +54,11 @@ public class Transaccion {
 	public Transaccion() {
 	}
 
-	public Transaccion(Inversionista inversionista, Comisionista comisionista, String tipo, Date fecha, Double cantidad,
-			Double precio, Double monto_total, boolean estado) {
+	public Transaccion(Integer transaccion_id, Inversionista inversionista, Comisionista comisionista, String tipo,
+			Date fecha, Double cantidad, Double precio, Double monto_total, Contrato contrato, Empresa empresa,
+			boolean estado) {
+		super();
+		this.transaccion_id = transaccion_id;
 		this.inversionista = inversionista;
 		this.comisionista = comisionista;
 		this.tipo = tipo;
@@ -63,6 +66,8 @@ public class Transaccion {
 		this.cantidad = cantidad;
 		this.precio = precio;
 		this.monto_total = monto_total;
+		this.contrato = contrato;
+		this.empresa = empresa;
 		this.estado = estado;
 	}
 
@@ -73,6 +78,22 @@ public class Transaccion {
 
 	public void setTransaccion_id(Integer transaccion_id) {
 		this.transaccion_id = transaccion_id;
+	}
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 
 	public Inversionista getInversionista() {
@@ -139,12 +160,5 @@ public class Transaccion {
 		this.contrato = contrato;
 	}
 
-	public void setestado(boolean estado) {
-		this.estado = estado;
-	}
-
-	public boolean getestado() {
-		return estado;
-	}
 
 }
