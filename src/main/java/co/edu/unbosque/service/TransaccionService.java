@@ -23,6 +23,9 @@ public class TransaccionService {
 		return repository.findById(id);
 	}
 
+    public List<Object[]> getTransaccionesPorInversionistaId(Integer inversionistaId) {
+        return repository.findByInversionistaId(inversionistaId);
+    }
 	public Transaccion createTransaccion(Transaccion Transaccion) {
 		return repository.save(Transaccion);
 	}

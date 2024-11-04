@@ -74,7 +74,7 @@ public class TransaccionController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
-		Optional<Empresa> empresaOpt = empresaService.getEmpresaById(comisionista_id);
+		Optional<Empresa> empresaOpt = empresaService.getEmpresaById(empresa_id);
 		if (!empresaOpt.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
@@ -83,6 +83,7 @@ public class TransaccionController {
 		transaccion.setComisionista(comisionistaOpt.get());
 		transaccion.setContrato(contratoOpt.get());
 		transaccion.setEmpresa(empresaOpt.get());
+
 		transaccion.setTipo(tipo);
 		transaccion.setCantidad(cantidad);
 		transaccion.setPrecio(precio);
@@ -164,5 +165,16 @@ public class TransaccionController {
 		transaccionService.createTransaccion(transaccion);
 		return ResponseEntity.status(HttpStatus.OK).body(transaccion);
 
+	}
+	
+	
+	
+	@GetMapping("/transaccion/inversionista/{inversionistaId}")
+	public ResponseEntity<List<Object[]>> obtenertransaccionInv(@PathVariable Integer inversionistaId) {
+		List<Object[]> resultados = transaccionService.getTransaccionesPorInversionistaId(inversionistaId);
+		if (resultados.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(resultados);
 	}
 }
