@@ -203,4 +203,22 @@ public class TransaccionController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(resultados);
 	}
+	
+	
+	@PutMapping("/transaccion/comisionista/aceptar/{id}")
+	public ResponseEntity<Transaccion> update(@PathVariable Integer id) {
+
+		Optional<Transaccion> transaccionOpt = transaccionService.getTransaccionById(id);
+		if (!transaccionOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		Transaccion transaccion = transaccionOpt.get();
+		
+		transaccion.setEstado(true);
+
+		transaccionService.updateTransaccion(transaccion);
+		return ResponseEntity.status(HttpStatus.OK).body(transaccion);
+
+	}
 }
