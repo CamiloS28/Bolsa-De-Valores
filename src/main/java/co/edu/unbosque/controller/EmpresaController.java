@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unbosque.service.EmpresaService;
 import co.edu.unbosque.model.Empresa;
+import co.edu.unbosque.model.Inversionista;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import java.util.List;
@@ -55,6 +56,25 @@ public class EmpresaController {
         return ResponseEntity.status(HttpStatus.OK).body(listaEmpresas);
     }
 
+    @GetMapping("/empresa/{id}")
+    public ResponseEntity<Empresa> getOne(@PathVariable Integer id) {
+        Optional<Empresa> empresaOpt = empresaService.getEmpresaById(id);
+        if (empresaOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(empresaOpt.get());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+    
+    @GetMapping("/empresa/nombre/{nombre}")
+    public ResponseEntity<Empresa> getOne(@PathVariable String nombre) {
+        Optional<Empresa> inversionistaOpt = empresaService.getEmpresaByname(nombre);
+        if (inversionistaOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(inversionistaOpt.get());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+    
+    
     @PutMapping("/empresa/{id}")
     public ResponseEntity<Empresa> update(@PathVariable Integer id, @RequestParam String nombre,
             @RequestParam String sector, @RequestParam String pais) {

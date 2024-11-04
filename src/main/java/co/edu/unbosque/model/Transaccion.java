@@ -160,12 +160,5 @@ public class Transaccion {
 		this.contrato = contrato;
 	}
 
-	public void setestado(boolean estado) {
-		this.estado = estado;
-	}
-
-	public boolean getestado() {
-		return estado;
-	}
 
 }

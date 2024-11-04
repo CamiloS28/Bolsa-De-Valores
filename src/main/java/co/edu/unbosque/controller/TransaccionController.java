@@ -88,7 +88,7 @@ public class TransaccionController {
 		transaccion.setPrecio(precio);
 		transaccion.setFecha(fecha);
 		transaccion.setMonto_total(monto_total);
-		transaccion.setestado(estado);
+		transaccion.setEstado(estado);
 
 		transaccionService.createTransaccion(transaccion);
 		return ResponseEntity.status(HttpStatus.CREATED).body(transaccion);
@@ -159,7 +159,7 @@ public class TransaccionController {
 		transaccion.setPrecio(precio);
 		transaccion.setFecha(fecha);
 		transaccion.setMonto_total(monto_total);
-		transaccion.setestado(estado);
+		transaccion.setEstado(estado);
 
 		transaccionService.createTransaccion(transaccion);
 		return ResponseEntity.status(HttpStatus.OK).body(transaccion);
