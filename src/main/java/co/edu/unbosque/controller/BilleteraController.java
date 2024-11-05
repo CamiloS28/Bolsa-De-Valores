@@ -64,6 +64,15 @@ public class BilleteraController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(billetera);
     }
 
+    @GetMapping("/billetera/usuario/{id}")
+    public ResponseEntity<List<Billetera>> getBilleteraByUsuario(@PathVariable Integer id) {
+        List<Billetera> billetera = billeteraService.findBilleteraByUsuarioId(id);
+        if (billetera.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(billetera);
+    }
+
     @DeleteMapping("/billetera/{id}")
     public ResponseEntity<Billetera> deleteBilletera(@PathVariable Integer id) {
 

@@ -34,4 +34,8 @@ public class BilleteraService {
         repository.deleteById(id);
     }
 
+    public List<Billetera> findBilleteraByUsuarioId(Integer usuarioId) {
+        return repository.findBilleteraByUsuarioId(usuarioId);
+    }
+
 }
