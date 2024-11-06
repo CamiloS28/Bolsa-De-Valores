@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Date;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -203,8 +204,7 @@ public class TransaccionController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(resultados);
 	}
-	
-	
+
 	@PutMapping("/transaccion/comisionista/aceptar/{id}")
 	public ResponseEntity<Transaccion> update(@PathVariable Integer id) {
 
@@ -214,11 +214,40 @@ public class TransaccionController {
 		}
 
 		Transaccion transaccion = transaccionOpt.get();
-		
+
 		transaccion.setEstado(true);
 
 		transaccionService.updateTransaccion(transaccion);
 		return ResponseEntity.status(HttpStatus.OK).body(transaccion);
 
+	}
+
+	@GetMapping("/transaccion/comisionista/{comisionistaId}/transacciones")
+	public ResponseEntity<List<Transaccion>> ObtenerTransaccionesPorEstado(@PathVariable Integer comisionistaId) {
+
+		List<Transaccion> transacciones = transaccionService.findTransaccionesByComisionistaIdAndEstado(comisionistaId);
+
+		if (transacciones.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		Optional<Comisionista> comisionistas = comisionistaService.getComisionistaById(comisionistaId);
+
+		if (!comisionistas.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(transacciones);
+	}
+
+	@PutMapping("/transaccion/aceptar/{id}")
+	public ResponseEntity<Transaccion> aceptarTransaccion(@PathVariable Integer id) {
+		Optional<Transaccion> transaccionOpt = transaccionService.getTransaccionById(id);
+		if (!transaccionOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		Transaccion transaccion = transaccionService.aceptarTransaccion(id);
+		return ResponseEntity.status(HttpStatus.OK).body(transaccion);
 	}
 }
