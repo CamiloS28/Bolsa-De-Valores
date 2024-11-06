@@ -10,6 +10,12 @@ import co.edu.unbosque.model.Transaccion;
 
 public interface TransaccionRepository extends JpaRepository<Transaccion, Integer> {
 
-    @Query(value = "SELECT inversionista_id, empresa, cantidad, precio, monto_total FROM vista_transacciones_compras WHERE inversionista_id = :inversionistaId", nativeQuery = true)
-    List<Object[]> findByInversionistaId(@Param("inversionistaId") Integer inversionistaId);
+	@Query(value = "SELECT inversionista_id, nombre_empresa, cantidad, precio, monto_total FROM vista_transacciones_compras WHERE inversionista_id = :inversionistaId AND estado = :estado", nativeQuery = true)
+	List<Object[]> findByInversionistaIdAndEstado(@Param("inversionistaId") Integer inversionistaId, @Param("estado") String estado);
+
+	
+	@Query(value = "SELECT inversionista_id, nombre_empresa, cantidad, precio, monto_total FROM vista_transacciones_compras WHERE inversionista_id = :inversionistaId AND estado = :estado AND tipo = :tipo", nativeQuery = true)
+	List<Object[]> findByInversionistaIdAndEstadoAndTipo(@Param("inversionistaId") Integer inversionistaId, @Param("estado") Boolean estado, @Param("tipo") String tipo);
+
+
 }

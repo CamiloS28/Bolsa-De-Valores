@@ -195,16 +195,21 @@ public class TransaccionController {
 
 	}
 
-	@GetMapping("/transaccion/inversionista/{inversionistaId}")
-	public ResponseEntity<List<Object[]>> obtenertransaccionInv(@PathVariable Integer inversionistaId) {
-		List<Object[]> resultados = transaccionService.getTransaccionesPorInversionistaId(inversionistaId);
+	@GetMapping("/transaccion/inversionista/{inversionistaId}/{estado}/{tipo}")
+	public ResponseEntity<List<Object[]>> obtenertransaccionInv(@PathVariable Integer inversionistaId,
+			@PathVariable Boolean estado, // Cambiado a Integer para manejar 0 y 1
+			@PathVariable String tipo) { // Puede ser "compra" o "venta"
+
+		List<Object[]> resultados = transaccionService.getTransaccionesPorInversionistaIdEstadoYTipo(inversionistaId,
+				estado, tipo);
+
 		if (resultados.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(resultados);
 	}
-	
-	
+
 	@PutMapping("/transaccion/comisionista/aceptar/{id}")
 	public ResponseEntity<Transaccion> update(@PathVariable Integer id) {
 
@@ -214,7 +219,7 @@ public class TransaccionController {
 		}
 
 		Transaccion transaccion = transaccionOpt.get();
-		
+
 		transaccion.setEstado(true);
 
 		transaccionService.updateTransaccion(transaccion);
