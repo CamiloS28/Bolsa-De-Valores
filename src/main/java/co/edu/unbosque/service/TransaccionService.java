@@ -23,9 +23,20 @@ public class TransaccionService {
 		return repository.findById(id);
 	}
 
+
 	public List<Object[]> getTransaccionesPorInversionistaId(Integer inversionistaId) {
 		return repository.findByInversionistaId(inversionistaId);
 	}
+
+	public List<Object[]> getTransaccionesPorInversionistaIdYEstado(Integer inversionistaId, String estado) {
+	    return repository.findByInversionistaIdAndEstado(inversionistaId, estado);
+	}
+	
+	public List<Object[]> getTransaccionesPorInversionistaIdEstadoYTipo(Integer inversionistaId, Boolean estado, String tipo) {
+	    return repository.findByInversionistaIdAndEstadoAndTipo(inversionistaId, estado, tipo);
+	}
+
+
 
 	public Transaccion createTransaccion(Transaccion Transaccion) {
 		return repository.save(Transaccion);

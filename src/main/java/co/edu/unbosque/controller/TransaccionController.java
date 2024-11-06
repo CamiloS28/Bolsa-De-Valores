@@ -196,12 +196,37 @@ public class TransaccionController {
 
 	}
 
-	@GetMapping("/transaccion/inversionista/{inversionistaId}")
-	public ResponseEntity<List<Object[]>> obtenertransaccionInv(@PathVariable Integer inversionistaId) {
-		List<Object[]> resultados = transaccionService.getTransaccionesPorInversionistaId(inversionistaId);
+	@PutMapping("/transaccion/venta/{id}")
+	public ResponseEntity<Transaccion> venta(@PathVariable Integer id) {
+
+		Optional<Transaccion> transaccionOpt = transaccionService.getTransaccionById(id);
+		if (!transaccionOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		Transaccion transaccion = transaccionOpt.get();
+
+		transaccion.setTipo("venta");
+
+		transaccion.setEstado(false);
+
+		transaccionService.createTransaccion(transaccion);
+		return ResponseEntity.status(HttpStatus.OK).body(transaccion);
+
+	}
+
+	@GetMapping("/transaccion/inversionista/{inversionistaId}/{estado}/{tipo}")
+	public ResponseEntity<List<Object[]>> obtenertransaccionInv(@PathVariable Integer inversionistaId,
+			@PathVariable Boolean estado, // Cambiado a Integer para manejar 0 y 1
+			@PathVariable String tipo) { // Puede ser "compra" o "venta"
+
+		List<Object[]> resultados = transaccionService.getTransaccionesPorInversionistaIdEstadoYTipo(inversionistaId,
+				estado, tipo);
+
 		if (resultados.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(resultados);
 	}
 
