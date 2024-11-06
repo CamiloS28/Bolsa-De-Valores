@@ -144,4 +144,14 @@ public class UsuarioController {
 
 	}
 
+	@GetMapping("/emails")
+	public ResponseEntity<List<String>> obtenerTodosLosCorreos() {
+		List<String> emails = usuarioService.obtenerTodosLosCorreos();
+
+		if (emails.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Si no hay correos, devolver un 204 NO CONTENT
+		} else {
+			return new ResponseEntity<>(emails, HttpStatus.OK); // Si hay correos, devolver la lista con un 200 OK
+		}
+	}
 }
