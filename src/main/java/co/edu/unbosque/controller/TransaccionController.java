@@ -115,24 +115,24 @@ public class TransaccionController {
 		List<Transaccion> listaTransaccion = transaccionService.getAll();
 
 		if (listaTransaccion.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); // Devuelve false si no hay transacciones
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); 
 		}
 
 		Optional<Empresa> empresaOpt = empresaService.getEmpresaByname(nombre);
 		if (!empresaOpt.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); // Devuelve false si la empresa no existe
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); 
 		} else {
 			id_empresa = empresaOpt.get().getEmpresa_id();
 		}
 
 		for (Transaccion transaccion : listaTransaccion) {
-			if (transaccion.getTipo().equals("compra") && transaccion.getEmpresa().getEmpresa_id() == id_empresa) {
+			if (transaccion.getInversionista().getInversionista_id() == id &&transaccion.getTipo().equals("compra") && transaccion.getEmpresa().getEmpresa_id() == id_empresa && transaccion.isEstado() == true) {
 				verificado = true;
 				break;
 			}
 		}
 
-		return ResponseEntity.ok(verificado); // Devuelve el estado de verificado
+		return ResponseEntity.ok(verificado); 
 	}
 
 	@GetMapping("/transaccion/{id}")
