@@ -115,24 +115,25 @@ public class TransaccionController {
 		List<Transaccion> listaTransaccion = transaccionService.getAll();
 
 		if (listaTransaccion.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); 
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
 		}
 
 		Optional<Empresa> empresaOpt = empresaService.getEmpresaByname(nombre);
 		if (!empresaOpt.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); 
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
 		} else {
 			id_empresa = empresaOpt.get().getEmpresa_id();
 		}
 
 		for (Transaccion transaccion : listaTransaccion) {
-			if (transaccion.getInversionista().getInversionista_id() == id &&transaccion.getTipo().equals("compra") && transaccion.getEmpresa().getEmpresa_id() == id_empresa && transaccion.isEstado() == true) {
+			if (transaccion.getInversionista().getInversionista_id() == id && transaccion.getTipo().equals("compra")
+					&& transaccion.getEmpresa().getEmpresa_id() == id_empresa && transaccion.isEstado() == true) {
 				verificado = true;
 				break;
 			}
 		}
 
-		return ResponseEntity.ok(verificado); 
+		return ResponseEntity.ok(verificado);
 	}
 
 	@GetMapping("/transaccion/{id}")
@@ -275,4 +276,26 @@ public class TransaccionController {
 		Transaccion transaccion = transaccionService.aceptarTransaccion(id);
 		return ResponseEntity.status(HttpStatus.OK).body(transaccion);
 	}
+
+	@GetMapping("/cantidad/{transaccionId}")
+	public ResponseEntity<Integer> getCantidadByTransaccionId(@PathVariable Integer transaccionId) {
+		Optional<Integer> cantidad = transaccionService.findCantidad(transaccionId);
+
+		if (cantidad.isPresent()) {
+			return ResponseEntity.status(HttpStatus.OK).body(cantidad.get());
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
+	@GetMapping("/transaccion/comisionista/{comisionistaId}/ventas/{tipo}")
+	public ResponseEntity<List<Transaccion>> VentasDeInversionistas(@PathVariable Integer comisionistaId,
+			@PathVariable String tipo) {
+		List<Transaccion> transacciones = transaccionService.findVentasDeInversionistas(comisionistaId, tipo);
+		if (transacciones.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(transacciones);
+	}
+
 }

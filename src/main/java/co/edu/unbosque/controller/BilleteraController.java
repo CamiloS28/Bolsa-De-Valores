@@ -113,4 +113,21 @@ public class BilleteraController {
         return ResponseEntity.ok(result);
     }
 
+    @PutMapping("/billetera/{id}/saldo")
+    public ResponseEntity<Billetera> actualizarSaldo(@PathVariable Integer id, @RequestParam double suma) {
+        Optional<Billetera> billetera = billeteraService.getBilleteraById(id);
+
+        if (!billetera.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Billetera billeteraDetails = billetera.get();
+        double nuevoSaldo = billeteraDetails.getSaldo() + suma; // Sumar el valor al saldo actual
+        billeteraDetails.setSaldo(nuevoSaldo);
+
+        Billetera result = billeteraService.updateBilletera(billeteraDetails);
+
+        return ResponseEntity.ok(result);
+    }
+
 }
