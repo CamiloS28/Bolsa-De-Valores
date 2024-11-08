@@ -35,4 +35,8 @@ public class UsuarioService {
 	public void deleteUsuario(int id) {
 		repository.deleteById(id);
 	}
+
+	public List<String> obtenerTodosLosCorreos() {
+		return repository.findAllEmails();
+	}
 }

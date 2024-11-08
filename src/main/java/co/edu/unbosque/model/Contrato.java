@@ -22,7 +22,7 @@ public class Contrato {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer contrato_id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "inversionista_id", nullable = false)
     private Inversionista inversionista;
 
